@@ -9,7 +9,7 @@
 
         public int ItemId { get; set; }
         public string Name { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastChangedAt { get; set; }
 
         public int DiskId { get; set; }

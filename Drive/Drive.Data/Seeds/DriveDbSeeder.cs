@@ -13,37 +13,43 @@ namespace Drive.Data.Seeds
                     new User("luka.zuljo@gmail.com", "password")
                     {
                         UserId = 1,
-                        CreatedAt = DateTime.SpecifyKind(new DateTime(2022, 10, 10), DateTimeKind.Utc)
+                        DiskId = 1
                     },
 
                     new User("ante.antic@gmail.com", "password")
                     {
                         UserId = 2,
+                        DiskId = 2
                     },
 
                     new User("mate.matic@gmail.com", "password")
                     {
                         UserId = 3,
+                        DiskId = 3
                     },
 
                     new User("stipe.stipic@gmail.com", "password")
                     {
                         UserId = 4,
+                        DiskId = 4
                     },
 
                     new User("mijo.mijic@gmail.com", "password")
                     {
                         UserId = 5,
+                        DiskId = 5
                     },
 
                     new User("roko.rokic@gmail.com", "password")
                     {
                         UserId = 6,
+                        DiskId = 6
                     },
 
                     new User("jozo.jozic@gmail.com", "password")
                     {
                         UserId = 7,
+                        DiskId = 7
                     },
                 });
 
@@ -93,8 +99,8 @@ namespace Drive.Data.Seeds
                 });
 
             builder.Entity<Folder>()
-                .HasData(new List<Folder>
-                {
+    .HasData(new List<Folder>
+    {
                     new Folder("Dump-domaci")
                     {
                         ItemId = 1,
@@ -183,7 +189,7 @@ namespace Drive.Data.Seeds
                         ItemId = 14,
                         DiskId = 6
                     },
-                });
+    });
 
             builder.Entity<Comment>()
                 .HasData(new List<Comment>
@@ -192,7 +198,7 @@ namespace Drive.Data.Seeds
                     {
                         CommentId = 1,
                         UserId = 1,
-                        ItemId = 1 
+                        ItemId = 1
                     },
 
                     new Comment("Komentar 2")
@@ -290,7 +296,7 @@ namespace Drive.Data.Seeds
                     {
                         CommentId = 15,
                         UserId = 3,
-                        ItemId = 15
+                        ItemId = 13
                     },
                 });
         }

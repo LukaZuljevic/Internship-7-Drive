@@ -2,6 +2,7 @@
 using Drive.Data.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 
 namespace Drive.Data.Entities;
@@ -58,8 +59,14 @@ public class DumpDriveDbContext : DbContext
             .WithMany(u => u.Comments)
             .HasForeignKey(c => c.UserId);
 
-        //DriveDbSeeder.Seed(modelBuilder);
+        DriveDbSeeder.Seed(modelBuilder);
         base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.ConfigureWarnings(warnings =>
+               warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
 }
 

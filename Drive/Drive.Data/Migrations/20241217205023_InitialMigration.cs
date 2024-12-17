@@ -56,12 +56,11 @@ namespace Drive.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastChangedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastChangedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DiskId = table.Column<int>(type: "integer", nullable: false),
+                    ParentFolderId = table.Column<int>(type: "integer", nullable: true),
                     Item_type = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: true),
-                    FolderId = table.Column<int>(type: "integer", nullable: true),
-                    ParentFolderId = table.Column<int>(type: "integer", nullable: true)
+                    Content = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -71,12 +70,6 @@ namespace Drive.Data.Migrations
                         column: x => x.DiskId,
                         principalTable: "Disks",
                         principalColumn: "DiskId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Items_Items_FolderId",
-                        column: x => x.FolderId,
-                        principalTable: "Items",
-                        principalColumn: "ItemId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Items_Items_ParentFolderId",
@@ -159,11 +152,6 @@ namespace Drive.Data.Migrations
                 name: "IX_Items_DiskId",
                 table: "Items",
                 column: "DiskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_FolderId",
-                table: "Items",
-                column: "FolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_ParentFolderId",

@@ -9,7 +9,7 @@
 
         public int CommentId { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Today;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int ItemId { get; set; }
         public Item? Item { get; set; }

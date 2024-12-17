@@ -17,5 +17,6 @@
         public Disk Disk { get; set; }
 
         public List<SharedItem> SharedItems { get; set; } = new List<SharedItem>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

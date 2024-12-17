@@ -1,4 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
+using Drive.Data.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -57,12 +58,7 @@ public class DumpDriveDbContext : DbContext
             .WithMany(u => u.Comments)
             .HasForeignKey(c => c.UserId);
 
-        modelBuilder.Entity<Folder>()
-            .HasMany<Files>(f => f.Files) 
-            .WithOne(file => file.Folder)
-            .HasForeignKey(file => file.FolderId) 
-            .OnDelete(DeleteBehavior.Cascade);
-
+        //DriveDbSeeder.Seed(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }

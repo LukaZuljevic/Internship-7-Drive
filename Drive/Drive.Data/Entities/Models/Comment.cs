@@ -2,9 +2,14 @@
 {
     public class Comment
     {
+        public Comment(string content)
+        {
+            Content = content;
+        }
+
         public int CommentId { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Today;
 
         public int ItemId { get; set; }
         public Item? Item { get; set; }

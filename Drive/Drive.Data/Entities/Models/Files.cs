@@ -2,9 +2,11 @@
 {
     public class Files : Item
     {
-        public string Content { get; set; }
+        public Files(string name, string content) : base(name)
+        {
+            Content = content;
+        }
 
-        public int FolderId { get; set; }
-        public Folder? Folder { get; set; }
+        public string Content { get; set; }
     }
 }

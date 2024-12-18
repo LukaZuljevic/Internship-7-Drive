@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Drive.Data.Entities;
 
-public class DumpDriveDbContext : DbContext
+public class DriveDbContext : DbContext
 {
-    public DumpDriveDbContext(DbContextOptions options) : base(options)
+    public DriveDbContext(DbContextOptions options) : base(options)
     {
 
     }
@@ -28,7 +28,7 @@ public class DumpDriveDbContext : DbContext
            .HasDiscriminator<string>("Item_type")
            .HasValue<Folder>("Folder")
            .HasValue<Files>("File");
-
+        
         modelBuilder.Entity<User>()
             .HasOne(u => u.Disk)
             .WithOne(d => d.User)
@@ -70,9 +70,9 @@ public class DumpDriveDbContext : DbContext
     }
 }
 
-public class DriveDbContextFactory : IDesignTimeDbContextFactory<DumpDriveDbContext>
+public class DriveDbContextFactory : IDesignTimeDbContextFactory<DriveDbContext>
 {
-    public DumpDriveDbContext CreateDbContext(string[] args)
+    public DriveDbContext CreateDbContext(string[] args)
     {
         var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -83,10 +83,10 @@ public class DriveDbContextFactory : IDesignTimeDbContextFactory<DumpDriveDbCont
             .First()
             .TryGet("connectionStrings:add:Drive:connectionString", out var connectionString);
 
-        var options = new DbContextOptionsBuilder<DumpDriveDbContext>()
+        var options = new DbContextOptionsBuilder<DriveDbContext>()
             .UseNpgsql(connectionString)
             .Options;
 
-        return new DumpDriveDbContext(options);
+        return new DriveDbContext(options);
     }
 }

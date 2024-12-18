@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Drive.Data.Entities;
 
-public class DriveDbContext : DbContext
+public class DumpDriveDbContext : DbContext
 {
-    public DriveDbContext(DbContextOptions options) : base(options)
+    public DumpDriveDbContext(DbContextOptions options) : base(options)
     {
 
     }
@@ -70,9 +70,9 @@ public class DriveDbContext : DbContext
     }
 }
 
-public class DriveDbContextFactory : IDesignTimeDbContextFactory<DriveDbContext>
+public class DriveDbContextFactory : IDesignTimeDbContextFactory<DumpDriveDbContext>
 {
-    public DriveDbContext CreateDbContext(string[] args)
+    public DumpDriveDbContext CreateDbContext(string[] args)
     {
         var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -83,10 +83,10 @@ public class DriveDbContextFactory : IDesignTimeDbContextFactory<DriveDbContext>
             .First()
             .TryGet("connectionStrings:add:Drive:connectionString", out var connectionString);
 
-        var options = new DbContextOptionsBuilder<DriveDbContext>()
+        var options = new DbContextOptionsBuilder<DumpDriveDbContext>()
             .UseNpgsql(connectionString)
             .Options;
 
-        return new DriveDbContext(options);
+        return new DumpDriveDbContext(options);
     }
 }

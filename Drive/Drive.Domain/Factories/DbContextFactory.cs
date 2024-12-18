@@ -6,13 +6,13 @@ namespace Drive.Domain.Factories
 {
     public static class DbContextFactory
     {
-        public static DriveDbContext GetDriveDbContext()
+        public static DumpDriveDbContext GetDriveDbContext()
         {
             var options = new DbContextOptionsBuilder()
                 .UseNpgsql(ConfigurationManager.ConnectionStrings["Drive"].ConnectionString)
                 .Options;
 
-            return new DriveDbContext(options);
+            return new DumpDriveDbContext(options);
         }
     }
 }

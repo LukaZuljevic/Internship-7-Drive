@@ -5,9 +5,9 @@ namespace Drive.Domain.Repositories
 {
     public abstract class BaseRepository
     {
-        protected readonly DriveDbContext DbContext;
+        protected readonly DumpDriveDbContext DbContext;
 
-        protected BaseRepository(DriveDbContext dbContext)
+        protected BaseRepository(DumpDriveDbContext dbContext)
         {
             DbContext = dbContext;
         }

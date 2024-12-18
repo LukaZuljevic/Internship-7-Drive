@@ -43,5 +43,6 @@ namespace Drive.Domain.Repositories
         }
 
         public User? GetById(int userId) => DbContext.Users.FirstOrDefault(u => u.UserId == userId);
+        public User? GetByEmail(string email) => DbContext.Users.FirstOrDefault(u => u.Email == email);
     }
 }

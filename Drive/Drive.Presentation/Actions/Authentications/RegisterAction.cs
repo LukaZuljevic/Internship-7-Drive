@@ -1,5 +1,8 @@
 ﻿using Drive.Presentation.Abstractions;
 using Drive.Domain.Repositories;
+using Drive.Presentation.Helpers;
+using Drive.Data.Entities.Models;
+
 
 namespace Drive.Presentation.Actions.Authentications
 {
@@ -7,16 +10,34 @@ namespace Drive.Presentation.Actions.Authentications
     {
         private readonly UserRepository _userRepository;
 
+        public string ActionName { get; set; } = "Register";
+
         public RegisterAction(UserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
-        public string ActionName { get; set; }
-
         public void Open()
         {
-            Console.WriteLine("Uspjesno si otvoria registracijsku formu");
+            Console.Clear();
+            Writer.DisplayInfo("========== Registration ==========\n");
+
+            var email = string.Empty;
+            do
+            {
+                email = Reader.TryReadEmail("Enter your email address");
+            }
+            while (UserActions.IsEmailAlreadyInUse(email));
+
+            var password = Reader.ConfirmPassword();
+
+            UserActions.RegisterUser(email, password);
+
+            Writer.DisplaySuccess("\nRegistration successful!");
+            Reader.PressAnyKey();
+
+            //Dodaj automatski unos diskId-a za korisnika
+            //Dodaj captchu za registraciju
         }
     }
 }

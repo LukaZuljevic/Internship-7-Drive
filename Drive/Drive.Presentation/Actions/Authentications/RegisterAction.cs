@@ -1,7 +1,6 @@
 ﻿using Drive.Presentation.Abstractions;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
-using Drive.Data.Entities.Models;
 
 
 namespace Drive.Presentation.Actions.Authentications
@@ -19,7 +18,6 @@ namespace Drive.Presentation.Actions.Authentications
 
         public void Open()
         {
-            Console.Clear();
             Writer.DisplayInfo("========== Registration ==========\n");
 
             var email = string.Empty;

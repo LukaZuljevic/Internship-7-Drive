@@ -18,6 +18,7 @@
 
         public static void DisplayInfo(string message)
         {
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(message);
             Console.ResetColor();

@@ -14,6 +14,7 @@ namespace Drive.Presentation.Factories
             var actions = new List<IAction>
             {
                 new RegisterAction(RepositoryFactory.Create<UserRepository>()),
+                new LoginAction(RepositoryFactory.Create<UserRepository>()),
                 new ExitMenuAction()
             };
 

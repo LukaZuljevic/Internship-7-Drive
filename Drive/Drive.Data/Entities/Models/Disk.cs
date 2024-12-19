@@ -7,6 +7,12 @@
             Name = name;
         }
 
+        public Disk(string name, int userId)
+        {
+            Name = name;
+            UserId = userId;
+        }
+
         public int DiskId { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }

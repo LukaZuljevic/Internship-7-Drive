@@ -44,5 +44,8 @@ namespace Drive.Domain.Repositories
 
         public User? GetById(int userId) => DbContext.Users.FirstOrDefault(u => u.UserId == userId);
         public User? GetByEmail(string email) => DbContext.Users.FirstOrDefault(u => u.Email == email);
+
+        public List<Folder> GetUserFolders(User user) => DbContext.Folders.Where(f => f.DiskId == user.DiskId).ToList();
+        public List<Files> GetUserFiles(User user) => DbContext.Files.Where(f => f.DiskId == user.DiskId).ToList();
     }
 }

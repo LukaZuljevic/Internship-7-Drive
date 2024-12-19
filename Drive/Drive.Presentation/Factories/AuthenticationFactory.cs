@@ -4,7 +4,6 @@ using Drive.Presentation.Abstractions;
 using Drive.Presentation.Actions;
 using Drive.Presentation.Actions.Authentications;
 
-
 namespace Drive.Presentation.Factories
 {
     public class AuthenticationFactory

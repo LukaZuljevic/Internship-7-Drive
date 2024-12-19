@@ -6,7 +6,6 @@
         {
 
         }
-
         public List<Files> Files { get; set; } = new List<Files>();
     }
 }

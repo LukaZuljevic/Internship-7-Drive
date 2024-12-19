@@ -7,13 +7,13 @@ namespace Drive.Presentation.Actions.Authentications
 {
     public class RegisterAction : IAction
     {
-        private readonly UserRepository _userRepository;
+        private readonly UserRepository UserRepository;
 
         public string ActionName { get; set; } = "Register";
 
         public RegisterAction(UserRepository userRepository)
         {
-            _userRepository = userRepository;
+            UserRepository = userRepository;
         }
 
         public void Open()
@@ -32,6 +32,8 @@ namespace Drive.Presentation.Actions.Authentications
             var captchaConfirmation = Reader.ConfirmCaptcha();
 
             UserActions.RegisterUser(email, password);
+
+            CreateDiskAction.Open(email);
 
             Writer.DisplaySuccess("\nRegistration successful!");
             Reader.PressAnyKey();

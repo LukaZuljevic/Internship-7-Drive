@@ -99,8 +99,8 @@ namespace Drive.Data.Seeds
                 });
 
             builder.Entity<Folder>()
-    .HasData(new List<Folder>
-    {
+                .HasData(new List<Folder>
+                {
                     new Folder("Dump-domaci")
                     {
                         ItemId = 1,
@@ -189,7 +189,30 @@ namespace Drive.Data.Seeds
                         ItemId = 14,
                         DiskId = 6
                     },
-    });
+                });
+
+            builder.Entity<Files>()
+               .HasData(new List<Files>
+               {
+                    new Files("Dump Domaci - Notes", "Content for Dump Domaci Notes")
+                    {
+                        ItemId = 15,
+                        DiskId = 1,
+                        ParentFolderId = 1, 
+                    },
+                    new Files("Fesb Predavanja - Slides", "Content for Fesb Predavanja Slides")
+                    {
+                        ItemId = 16,
+                        DiskId = 1,
+                        ParentFolderId = 2, 
+                    },
+                    new Files("Web Programiranje - Code", "Content for Web Programiranje Code")
+                    {
+                        ItemId = 17,
+                        DiskId = 1,
+                        ParentFolderId = 3,
+                    },
+               });
 
             builder.Entity<Comment>()
                 .HasData(new List<Comment>

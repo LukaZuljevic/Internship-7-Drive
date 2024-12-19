@@ -8,9 +8,7 @@ namespace Drive.Domain.Repositories
     {
         public DiskRepository(DumpDriveDbContext DbContext) : base(DbContext)
         {
-
         }
-
         public ResponseResultType Add(Disk disk)
         {
             DbContext.Disks.Add(disk);
@@ -43,5 +41,5 @@ namespace Drive.Domain.Repositories
         }
 
         public Disk? GetById(int diskId) => DbContext.Disks.FirstOrDefault(d => d.DiskId == diskId);
-    }
+   }
 }

@@ -9,7 +9,6 @@ namespace Drive.Presentation.Actions
     public class UserActions
     {
         private static UserRepository _userRepository = RepositoryFactory.Create<UserRepository>();
-
         public static bool IsEmailAlreadyInUse(string email)
         {
             var user = _userRepository.GetByEmail(email);
@@ -20,21 +19,16 @@ namespace Drive.Presentation.Actions
                 return true;
             }
 
-            return false; 
+            return false;
         }
 
         public static void RegisterUser(string email, string password)
-        {
+        {   
             var user = new User(email, password);
 
             var result = _userRepository.Add(user);
 
-            if (result == ResponseResultType.Success)
-            {
-                Writer.DisplaySuccess("\nRegistration successful!");
-                Reader.PressAnyKey();
-            }
-            else
+            if (result != ResponseResultType.Success)
             {
                 Writer.DisplayError("Registration failed. Please try again.\n");
                 Reader.PressAnyKey();

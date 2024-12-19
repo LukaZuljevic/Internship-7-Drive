@@ -69,15 +69,36 @@
 
         public static string ConfirmPassword()
         {
+            var password = TryReadPassword("Enter your password");
+
             while (true)
             {
-                var password = TryReadPassword("Enter your password");
                 var confirmPassword = TryReadPassword("Confirm your password");
 
                 if (password == confirmPassword)
                     return password;
 
                 Writer.DisplayError("Passwords do not match. Please try again.\n");
+            }
+        }
+
+        public static bool ConfirmCaptcha()
+        {
+            var random = new Random();
+
+            char randomLetter = (char)random.Next('A', 'Z' + 1);
+            int randomNumber = random.Next(10, 99);
+
+            var expectedCaptcha = $"{randomLetter}{randomNumber}";
+
+            while (true)
+            {
+                Reader.TryReadInput($"Enter the captcha ({expectedCaptcha})", out string input);
+
+                if (input == expectedCaptcha)
+                    return true;
+
+                Writer.DisplayError("Incorrect captcha. Please try again.\n");
             }
         }
     }

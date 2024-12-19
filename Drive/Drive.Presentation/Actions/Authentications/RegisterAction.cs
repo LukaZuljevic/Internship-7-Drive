@@ -31,13 +31,12 @@ namespace Drive.Presentation.Actions.Authentications
 
             var password = Reader.ConfirmPassword();
 
+            var captchaConfirmation = Reader.ConfirmCaptcha();
+
             UserActions.RegisterUser(email, password);
 
             Writer.DisplaySuccess("\nRegistration successful!");
             Reader.PressAnyKey();
-
-            //Dodaj automatski unos diskId-a za korisnika
-            //Dodaj captchu za registraciju
         }
     }
 }

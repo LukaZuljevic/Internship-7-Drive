@@ -8,7 +8,7 @@ namespace Drive.Presentation.Actions
     public class SharedItemsActions : IAction
     {
         private readonly SharedItemRepository SharedItemRepository;
-        public string ActionName { get; set; } = "Shared items";
+        public string ActionName { get; set; } = "Shared with me";
         User User { get; set; }
         public SharedItemsActions(SharedItemRepository sharedItemRepository, User user)
         {
@@ -21,7 +21,7 @@ namespace Drive.Presentation.Actions
 
             var actions = new List<IAction>
             {
-                new ExitMenuAction()
+                new ExitAppAction()
             };
 
             actions.PrintActions();

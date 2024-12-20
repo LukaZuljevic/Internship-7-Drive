@@ -41,5 +41,6 @@ namespace Drive.Domain.Repositories
         }
 
         public Disk? GetById(int diskId) => DbContext.Disks.FirstOrDefault(d => d.DiskId == diskId);
-   }
+
+    }
 }

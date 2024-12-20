@@ -1,9 +1,8 @@
-﻿using Drive.Domain.Factories;
-using Drive.Domain.Repositories;
+﻿using Drive.Domain.Repositories;
 using Drive.Presentation.Abstractions;
-using Drive.Presentation.Helpers;
 using Drive.Data.Entities.Models;
 using Drive.Presentation.Extensions;
+using Drive.Presentation.Factories;
 
 
 namespace Drive.Presentation.Actions
@@ -20,19 +19,9 @@ namespace Drive.Presentation.Actions
         }
 
         public void Open()
-        {
-            Writer.DisplayInfo("========== My Disk ==========");
-
-            var actions = new List<IAction>
-            {
-                new PrintAllDiskItemsAction(DiskRepository, User),
-                //new DiskAddItemAction(_diskRepository, User),
-                //new DiskDeleteItemAction(_diskRepository, User),
-                //new DiskShareItemAction(_diskRepository, User),
-                new ExitMenuAction()
-            };
-
-            actions.PrintActions();
+        {           
+            var diskMenu = DiskMenuFactory.CreateActions(User);
+            diskMenu.PrintActions("========== DUMP Drive ==========\n");
         }
     }
 }

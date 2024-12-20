@@ -7,16 +7,14 @@ using Drive.Presentation.Helpers;
 
 namespace Drive.Presentation.Factories
 {
-    public class MainMenuFactory
+    public class DiskMenuFactory
     {
         public static IList<IAction> CreateActions(User user)
         {
             var actions = new List<IAction>
             {
-                new DiskActions(RepositoryFactory.Create<DiskRepository>(), user),
-                new SharedItemsActions(RepositoryFactory.Create<SharedItemRepository>(), user),
-                new ChangeProfileSettingsActions(RepositoryFactory.Create<UserRepository>(), user),
-                new LogoutAction(),
+                new PrintDiskItemsAction(RepositoryFactory.Create<DiskRepository>(), user),
+                new ExitAppAction(),
             };
 
             return actions;

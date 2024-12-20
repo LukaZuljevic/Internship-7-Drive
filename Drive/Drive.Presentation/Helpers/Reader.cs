@@ -101,5 +101,15 @@
                 Writer.DisplayError("Incorrect captcha. Please try again.\n");
             }
         }
+
+        public static string GetFileContent(string message, out string content)
+        {
+
+            Console.WriteLine(message);
+            content = Console.ReadLine();
+
+            return content;
+        }
+
     }
 }

@@ -19,9 +19,10 @@ namespace Drive.Presentation.Actions.Authentications
 
         public void Open()
         {
+            Console.Clear();
             Writer.DisplayInfo("========== Login ==========\n");
 
-            var email = Reader.TryReadEmail("Enter your email address");
+            var email = Reader.TryReadEmail("Enter your email");
 
             var password = Reader.TryReadPassword("Enter your password");
 
@@ -35,7 +36,7 @@ namespace Drive.Presentation.Actions.Authentications
             }
 
             var userActions = MainMenuFactory.CreateActions(user);
-            userActions.PrintActions();
+            userActions.PrintActions("========== Main Menu ==========\n");
         }
     }
 }

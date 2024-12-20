@@ -49,7 +49,24 @@ namespace Drive.Presentation.Helpers
             }
         }
 
+        public static void PrintLocation(string location)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Current Location: {location}");
+            Console.ResetColor();
+        }
 
+        public static void PrintCommands()
+        {
+            Console.WriteLine("help");
+            Console.WriteLine("stvori mapu 'ime mape'");
+            Console.WriteLine("stvori datoteku 'ime datoteke'");
+            Console.WriteLine("uđi u mapu 'ime mape'");
+            Console.WriteLine("uredi datoteku 'ime datoteke'");
+            Console.WriteLine("izbrisi mapu/datoteku 'ime mape/datoteke'");
+            Console.WriteLine("promjeni naziv mape/datoteke 'ime mape/datoteke' u 'novo ime mape/datoteke'");
+            Console.WriteLine("povratak");
+        }
     }
 }
 

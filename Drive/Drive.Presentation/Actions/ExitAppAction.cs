@@ -2,11 +2,11 @@
 
 namespace Drive.Presentation.Actions
 {
-    public class ExitMenuAction : IAction
+    public class ExitAppAction : IAction
     {
-        public string ActionName { get; set; } = "Exit";
+        public string ActionName { get; set; } = "Exit the app";
 
-        public ExitMenuAction()
+        public ExitAppAction()
         {
         }
 

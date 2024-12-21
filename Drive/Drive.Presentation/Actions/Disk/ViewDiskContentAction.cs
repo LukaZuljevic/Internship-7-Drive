@@ -13,7 +13,7 @@ namespace Drive.Presentation.Actions
         private readonly Stack<Folder?> _folderHistory = new Stack<Folder?>();
         private Folder? _currentFolder = null;
 
-        public string ActionName { get; set; } = "View All Items";
+        public string ActionName { get; set; } = "My Disk";
         public User User { get; set; }
 
         public ViewDiskContentAction(DiskRepository diskRepository, User user)
@@ -27,7 +27,6 @@ namespace Drive.Presentation.Actions
             Console.Clear();
 
             var commandActions = new CommandActions(_currentFolder, _folderHistory, _userRepository, User);
-
             commandActions.PrintCurrentFolderContent();
 
             while (true)
@@ -43,8 +42,14 @@ namespace Drive.Presentation.Actions
                     case var _ when Reader.StartsWithCommand(command, "stvori mapu"):
                         commandActions.CreateFolderInCurrentLocation(command);
                         break;
+                    case var _ when Reader.StartsWithCommand(command, "stvori datoteku"):
+                        commandActions.CreateFileInCurrentLocation(command);
+                        break;
                     case var _ when Reader.StartsWithCommand(command, "udi u mapu"):
                         commandActions.NavigateToFolder(command);
+                        break;
+                    case var _ when Reader.StartsWithCommand(command, "uredi datoteku"):
+                        commandActions.EditFileContents(command);
                         break;
                     case var _ when Reader.IsCommand(command, "nazad"):
                         commandActions.ReturnToPreviousFolder();

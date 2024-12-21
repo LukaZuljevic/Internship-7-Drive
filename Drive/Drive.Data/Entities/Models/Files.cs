@@ -6,7 +6,7 @@
         {
             Content = content;
         }
-        public Files(string name, string content, int parentFolderId, int diskId) : base(name)
+        public Files(string name, string content, int? parentFolderId, int diskId) : base(name)
         {
             Content = content;
             ParentFolderId = parentFolderId;

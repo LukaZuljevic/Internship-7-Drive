@@ -52,7 +52,7 @@ namespace Drive.Presentation.Extensions
                 }
                 else
                 {
-                    Writer.DisplayError($"Invalid input. Please enter a number between 1 and {actions.Count}");
+                    Writer.DisplayError($"Invalid option. Please try again.");
                 }
             }
         }

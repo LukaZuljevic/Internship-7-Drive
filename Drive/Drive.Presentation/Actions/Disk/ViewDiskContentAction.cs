@@ -6,7 +6,7 @@ using Drive.Presentation.Helpers;
 
 namespace Drive.Presentation.Actions
 {
-    public class PrintDiskItemsAction : IAction
+    public class ViewDiskContentAction : IAction
     {
         private readonly DiskRepository _diskRepository;
         private readonly UserRepository _userRepository = RepositoryFactory.Create<UserRepository>();
@@ -16,7 +16,7 @@ namespace Drive.Presentation.Actions
         public string ActionName { get; set; } = "View All Items";
         public User User { get; set; }
 
-        public PrintDiskItemsAction(DiskRepository diskRepository, User user)
+        public ViewDiskContentAction(DiskRepository diskRepository, User user)
         {
             _diskRepository = diskRepository;
             User = user;

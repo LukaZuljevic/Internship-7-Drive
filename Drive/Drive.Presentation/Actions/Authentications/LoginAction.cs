@@ -8,35 +8,37 @@ namespace Drive.Presentation.Actions.Authentications
 {
     public class LoginAction : IAction
     {
-        private readonly UserRepository UserRepository;
+        private readonly UserRepository _userRepository;
 
         public string ActionName { get; set; } = "Login";
 
         public LoginAction(UserRepository userRepository)
         {
-            UserRepository = userRepository;
+            _userRepository = userRepository;
         }
 
         public void Open()
         {
-            Console.Clear();
-            Writer.DisplayInfo("========== Login ==========\n");
-
-            var email = Reader.TryReadEmail("Enter your email");
-
-            var password = Reader.TryReadPassword("Enter your password");
-
-            var user = UserRepository.GetByEmail(email);
-
-            if(user is null || user.Password != password)
+            while (true)
             {
+                Console.Clear();
+                Writer.DisplayInfo("========== Login ==========\n");
+
+                var email = Reader.TryReadEmail("Enter your email");
+                var password = Reader.TryReadPassword("Enter your password");
+
+                var user = _userRepository.GetByEmail(email);
+
+                if (user != null && user.Password == password)
+                {
+                    var userActions = MainMenuFactory.CreateActions(user);
+                    userActions.PrintActions("========== Main Menu ==========\n");
+                    return; 
+                }
+
                 Writer.DisplayError("Invalid email or password. Please try again in 3 seconds.\n");
                 Thread.Sleep(3000);
-                Open();
             }
-
-            var userActions = MainMenuFactory.CreateActions(user);
-            userActions.PrintActions("========== Main Menu ==========\n");
         }
     }
 }

@@ -8,17 +8,17 @@ namespace Drive.Presentation.Actions
 {
     public class CreateDiskAction
     {
-        private static DiskRepository DiskRepository = RepositoryFactory.Create<DiskRepository>();
-        private static UserRepository UserRepository = RepositoryFactory.Create<UserRepository>();
+        private static DiskRepository _diskRepository = RepositoryFactory.Create<DiskRepository>();
+        private static UserRepository _userRepository = RepositoryFactory.Create<UserRepository>();
         public static void Open(string email)
         {
-            User user = UserRepository.GetByEmail(email);
+            User user = _userRepository.GetByEmail(email);
 
             Reader.TryReadInput("Enter disk name", out string name);
 
             var disk = new Disk(name, user.UserId);
 
-            var result = DiskRepository.Add(disk);
+            var result = _diskRepository.Add(disk);
         }
     }
 }

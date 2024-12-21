@@ -13,8 +13,8 @@ namespace Drive.Presentation.Factories
         {
             var actions = new List<IAction>
             {
-                new PrintDiskItemsAction(RepositoryFactory.Create<DiskRepository>(), user),
-                new ExitAppAction(),
+                new ViewDiskContentAction(RepositoryFactory.Create<DiskRepository>(), user),
+                new LogoutAction(),
             };
 
             return actions;

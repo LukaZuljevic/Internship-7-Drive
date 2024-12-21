@@ -9,12 +9,12 @@ namespace Drive.Presentation.Actions
 {
     public class DiskActions : IAction
     {
-        private static DiskRepository DiskRepository;
+        private static DiskRepository _diskRepository;
         public string ActionName { get; set; } = "My disk";
         public User User { get; set; }
         public DiskActions(DiskRepository diskRepository, User user)
         {
-            DiskRepository = diskRepository;
+            _diskRepository = diskRepository;
             User = user;
         }
 

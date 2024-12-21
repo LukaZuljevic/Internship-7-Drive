@@ -7,12 +7,12 @@ namespace Drive.Presentation.Actions
 {
     public class SharedItemsActions : IAction
     {
-        private readonly SharedItemRepository SharedItemRepository;
+        private readonly SharedItemRepository _sharedItemRepository;
         public string ActionName { get; set; } = "Shared with me";
         User User { get; set; }
         public SharedItemsActions(SharedItemRepository sharedItemRepository, User user)
         {
-            SharedItemRepository = sharedItemRepository;
+            _sharedItemRepository = sharedItemRepository;
             User = user;
         }
 

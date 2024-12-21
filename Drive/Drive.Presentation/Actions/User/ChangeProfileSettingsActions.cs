@@ -21,13 +21,14 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
-            Writer.DisplayInfo("========== Profile Settings ==========");
+            Console.Clear();
 
             while (true)
             {
-                Writer.DisplayInfo("1. Change Email\n2. Change Password\n3. Back to Main Menu");
+                Writer.DisplayInfo("========== Profile Settings ==========\n");
+                Console.WriteLine("1. Change Email\n2. Change Password\n3. Back to Main Menu");
 
-                Reader.TryReadInput("Select an option", out var input);
+                Reader.TryReadInput("\nSelect an option", out var input);
 
                 switch (input)
                 {
@@ -48,21 +49,23 @@ namespace Drive.Presentation.Actions
 
         private void ChangeEmail()
         {
-            var email = Reader.TryReadEmail("Enter your new email address");
-
-            if (IsEmailAlreadyInUse(email)) return;
+            var email = string.Empty;
+            do
+            {
+                email = Reader.TryReadEmail("Enter your new email address");
+            }
+            while (UserActions.IsEmailAlreadyInUse(email));
 
             User.Email = email;
             var result = _userRepository.Update(User, User.UserId);
 
-            if (result == ResponseResultType.Success)
-            {
-                Writer.DisplaySuccess("Email updated successfully!");
-            }
-            else
-            {
-                Writer.DisplayError("Failed to update email. Please try again.");
-            }
+            Writer.DisplayInfo(result == ResponseResultType.Success
+                 ? "Email updated successfully!"
+                 : "Failed to update email. Please try again.");
+
+            Reader.PressAnyKey();
+
+            Console.Clear();
         }
 
         private void ChangePassword()
@@ -72,27 +75,13 @@ namespace Drive.Presentation.Actions
             User.Password = password;
             var result = _userRepository.Update(User, User.UserId);
 
-            if (result == ResponseResultType.Success)
-            {
-                Writer.DisplaySuccess("Password updated successfully!");
-            }
-            else
-            {
-                Writer.DisplayError("Failed to update password. Please try again.");
-            }
-        }
+            Writer.DisplayInfo(result == ResponseResultType.Success
+                  ? "Password updated successfully!"
+                  : "Failed to update Password. Please try again.");
 
-        private bool IsEmailAlreadyInUse(string email)
-        {
-            var user = _userRepository.GetByEmail(email);
+            Reader.PressAnyKey();
 
-            if (user is not null)
-            {
-                Writer.DisplayError("Email is already in use. Please try again.");
-                return true;
-            }
-
-            return false;
+            Console.Clear();
         }
     }
 }

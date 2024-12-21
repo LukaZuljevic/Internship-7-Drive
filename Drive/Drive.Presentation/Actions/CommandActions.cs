@@ -24,47 +24,62 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
+
+            PrintCurrentFolderContent();
+
             while (true)
             {
-                PrintCurrentFolderContent();
-
                 Reader.TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
+                command = command.Trim();
 
-                if (command.StartsWith("udi u mapu", StringComparison.OrdinalIgnoreCase))
+                switch (true)
                 {
-                    var folderName = command.Substring("udi u mapu".Length).Trim();
-                    if (TryNavigateToFolder(folderName))
-                    {
-                        Writer.DisplaySuccess($"Successfully navigated to the folder '{folderName}'.");
-                    }
-                    else
-                    {
-                        Writer.DisplayError($"Folder '{folderName}' not found.");
-                    }
+                    case var _ when command.StartsWith("udi u mapu", StringComparison.OrdinalIgnoreCase):
+                        NavigateToFolder(command);
+                        break;
+                    case var _ when command.Equals("povratak", StringComparison.OrdinalIgnoreCase):
+                        ReturnToPreviousFolder();
+                        break;
+                    default:
+                        Writer.DisplayError("Invalid command. Try again.");
+                        break;
                 }
-                else if (command.Equals("nazad", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (_folderHistory.Count > 0)
-                    {
-                        _currentFolder = _folderHistory.Pop();
-                        Writer.DisplayInfo($"Returned to folder: {_currentFolder?.Name ?? "Root"}.");
-                    }
-                    else
-                    {
-                        Writer.DisplayError("You are already at the root folder.");
-                    }
-                }
-                else if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
-                {
-                    Writer.DisplayInfo("Exiting navigation...");
+               
+                if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                     break;
-                }
-                else
-                {
-                    Writer.DisplayError("Invalid command. Try again.");
-                }
+            }
+
+        }
+
+        private void NavigateToFolder(string command)
+        {
+            var folderName = command.Substring("udi u mapu".Length).Trim();
+
+            if (TryNavigateToFolder(folderName))
+            {
+                Writer.DisplaySuccess($"Successfully navigated to the folder '{folderName}'.");
+                PrintCurrentFolderContent();
+            }
+            else
+            {
+                Writer.DisplayError($"Folder '{folderName}' not found.");
             }
         }
+
+        private void ReturnToPreviousFolder()
+        {
+            if (_folderHistory.Count > 0)
+            {
+                _currentFolder = _folderHistory.Pop();
+                Writer.DisplayInfo($"Returned to folder: {_currentFolder?.Name ?? "Root"}.");
+                PrintCurrentFolderContent();    
+            }
+            else
+            {
+                Writer.DisplayError("You are already at the root folder.");
+            }
+        }
+
 
         public void PrintCurrentFolderContent()
         {

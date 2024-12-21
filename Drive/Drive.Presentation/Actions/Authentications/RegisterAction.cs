@@ -8,13 +8,13 @@ namespace Drive.Presentation.Actions.Authentications
 {
     public class RegisterAction : IAction
     {
-        private readonly UserRepository UserRepository;
+        private readonly UserRepository _userRepository;
 
         public string ActionName { get; set; } = "Register";
 
         public RegisterAction(UserRepository userRepository)
         {
-            UserRepository = userRepository;
+            _userRepository = userRepository;
         }
 
         public void Open()
@@ -40,7 +40,7 @@ namespace Drive.Presentation.Actions.Authentications
             Writer.DisplaySuccess("\nRegistration successful!");
             Reader.PressAnyKey();
 
-            var loginAction = new LoginAction(UserRepository);
+            var loginAction = new LoginAction(_userRepository);
             loginAction.Open();
 
         }

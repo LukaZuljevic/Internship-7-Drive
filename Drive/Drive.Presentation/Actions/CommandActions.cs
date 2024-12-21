@@ -1,6 +1,8 @@
 ﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
+using Drive.Domain.Enums;
 
 namespace Drive.Presentation.Actions
 {
@@ -12,6 +14,9 @@ namespace Drive.Presentation.Actions
 
         private readonly UserRepository _userRepository;
 
+        private static FolderRepository _folderRepository = RepositoryFactory.Create<FolderRepository>();
+        private static FileRepository _filesRepository = RepositoryFactory.Create<FileRepository>();
+
         private readonly User _user;
 
         public CommandActions(Folder? currentFolder, Stack<Folder?> folderHistory, UserRepository userRepository, User user)
@@ -22,45 +27,14 @@ namespace Drive.Presentation.Actions
             _user = user;
         }
 
-        public void Open()
-        {
 
-            PrintCurrentFolderContent();
-
-            while (true)
-            {
-                Reader.TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
-                command = command.Trim();
-
-                switch (true)
-                {
-                    case var _ when command.Equals("help", StringComparison.OrdinalIgnoreCase):
-                        Writer.PrintCommands();
-                        break;
-                    case var _ when command.StartsWith("udi u mapu", StringComparison.OrdinalIgnoreCase):
-                        NavigateToFolder(command);
-                        break;
-                    case var _ when command.Equals("povratak", StringComparison.OrdinalIgnoreCase):
-                        ReturnToPreviousFolder();
-                        break;
-                    default:
-                        Writer.DisplayError("Invalid command. Try again.");
-                        break;
-                }
-               
-                if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
-                    break;
-            }
-
-        }
-
-        private void NavigateToFolder(string command)
+        public void NavigateToFolder(string command)
         {
             var folderName = command.Substring("udi u mapu".Length).Trim();
 
             if (TryNavigateToFolder(folderName))
             {
-                Writer.DisplaySuccess($"Successfully navigated to the folder '{folderName}'.");
+                Writer.DisplaySuccess($"Successfully navigated to the folder '{folderName}'.\n");
                 PrintCurrentFolderContent();
             }
             else
@@ -69,12 +43,12 @@ namespace Drive.Presentation.Actions
             }
         }
 
-        private void ReturnToPreviousFolder()
+        public void ReturnToPreviousFolder()
         {
             if (_folderHistory.Count > 0)
             {
                 _currentFolder = _folderHistory.Pop();
-                Writer.DisplayInfo($"Returned to folder: {_currentFolder?.Name ?? "Root"}.");
+                Writer.DisplayInfo($"Returned to folder: {_currentFolder?.Name ?? "Root"}.\n");
                 PrintCurrentFolderContent();    
             }
             else
@@ -118,12 +92,68 @@ namespace Drive.Presentation.Actions
 
             if (targetFolder != null)
             {
-                _folderHistory.Push(_currentFolder); // Save current folder to history
+                _folderHistory.Push(_currentFolder); 
                 _currentFolder = targetFolder;
                 return true;
             }
 
             return false;
         }
+
+        public void CreateFolderInCurrentLocation(string command)
+        {
+
+            var folderName = command.Substring("stvori mapu".Length).Trim();
+
+            if(folderName.Length == 0)
+            {
+                Writer.DisplayError("Folder name cannot be empty\n");
+                return;
+            }
+
+            Folder newFolder;
+
+            newFolder = _currentFolder is null
+                 ? new Folder(folderName, null, _user.DiskId)
+                 : new Folder(folderName, _currentFolder.ItemId, _user.DiskId);
+
+
+            var result = _folderRepository.Add(newFolder);
+
+            if (result == ResponseResultType.Success)
+            {
+                Writer.DisplaySuccess($"Folder '{folderName}' successfully created.\n");
+                PrintCurrentFolderContent();
+            }
+            else
+            {
+                Writer.DisplayError($"Failed to create folder '{folderName}'. Please try again.\n");
+            }
+        }
+
+        //public void CreateFileInCurrentLocation(string command)
+        //{
+        //    var fileName = command.Substring("stvori datoteku".Length).Trim();
+
+        //    if (fileName.Length == 0)
+        //    {
+        //        Writer.DisplayError("File name cannot be empty\n");
+        //        return;
+        //    }
+
+        //    var newFile = new Files(fileName, _currentFolder?.ItemId, _user.DiskId);
+
+        //    var result = _filesRepository.Add(newFile);
+
+        //    if (result == ResponseResultType.Success)
+        //    {
+        //        Writer.DisplaySuccess($"File '{fileName}' successfully created.\n");
+        //        PrintCurrentFolderContent();
+        //    }
+        //    else
+        //    {
+        //        Writer.DisplayError($"Failed to create file '{fileName}'. Please try again.\n");
+        //    }
+        //} 
     }
 }

@@ -101,14 +101,14 @@
                 Writer.DisplayError("Incorrect captcha. Please try again.\n");
             }
         }
-
-        public static string GetFileContent(string message, out string content)
+        public static bool IsCommand(string input, string expectedCommand)
         {
+            return input.Equals(expectedCommand, StringComparison.OrdinalIgnoreCase);
+        }
 
-            Console.WriteLine(message);
-            content = Console.ReadLine();
-
-            return content;
+        public static bool StartsWithCommand(string input, string prefix)
+        {
+            return input.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

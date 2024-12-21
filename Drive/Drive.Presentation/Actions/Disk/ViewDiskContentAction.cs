@@ -25,12 +25,38 @@ namespace Drive.Presentation.Actions
         public void Open()
         {
             Console.Clear();
-            Writer.DisplayInfo("========== My Disk ==========\n");
 
             var commandActions = new CommandActions(_currentFolder, _folderHistory, _userRepository, User);
-            commandActions.PrintCurrentFolderContent(); 
 
-            commandActions.Open(); 
+            commandActions.PrintCurrentFolderContent();
+
+            while (true)
+            {
+                Reader.TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
+                command = command.Trim();
+
+                switch (true)
+                {
+                    case var _ when Reader.IsCommand(command, "help"):
+                        Writer.PrintCommands();
+                        break;
+                    case var _ when Reader.StartsWithCommand(command, "stvori mapu"):
+                        commandActions.CreateFolderInCurrentLocation(command);
+                        break;
+                    case var _ when Reader.StartsWithCommand(command, "udi u mapu"):
+                        commandActions.NavigateToFolder(command);
+                        break;
+                    case var _ when Reader.IsCommand(command, "nazad"):
+                        commandActions.ReturnToPreviousFolder();
+                        break;
+                    default:
+                        Writer.DisplayError("Invalid command. Try again.");
+                        break;
+                }
+
+                if (Reader.IsCommand(command, "exit"))
+                    break;
+            }
         }
     }
 }

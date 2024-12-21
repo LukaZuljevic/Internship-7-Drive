@@ -2,6 +2,7 @@
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 using Drive.Domain.Factories;
+using Drive.Domain.Enums;
 
 
 namespace Drive.Presentation.Actions
@@ -19,6 +20,9 @@ namespace Drive.Presentation.Actions
             var disk = new Disk(name, user.UserId);
 
             var result = _diskRepository.Add(disk);
+
+            if (result != ResponseResultType.Success)
+                Writer.DisplayError("Error creating disk");
         }
     }
 }

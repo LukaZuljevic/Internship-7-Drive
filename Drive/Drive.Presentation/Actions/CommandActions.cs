@@ -34,6 +34,9 @@ namespace Drive.Presentation.Actions
 
                 switch (true)
                 {
+                    case var _ when command.Equals("help", StringComparison.OrdinalIgnoreCase):
+                        Writer.PrintCommands();
+                        break;
                     case var _ when command.StartsWith("udi u mapu", StringComparison.OrdinalIgnoreCase):
                         NavigateToFolder(command);
                         break;
@@ -62,7 +65,7 @@ namespace Drive.Presentation.Actions
             }
             else
             {
-                Writer.DisplayError($"Folder '{folderName}' not found.");
+                Writer.DisplayError($"Folder '{folderName}' not found.\n");
             }
         }
 
@@ -76,7 +79,7 @@ namespace Drive.Presentation.Actions
             }
             else
             {
-                Writer.DisplayError("You are already at the root folder.");
+                Writer.DisplayError("You are already at the root folder.\n");
             }
         }
 

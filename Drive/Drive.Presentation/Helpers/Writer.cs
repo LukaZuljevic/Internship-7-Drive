@@ -58,15 +58,16 @@ namespace Drive.Presentation.Helpers
 
         public static void PrintCommands()
         {
-            Console.WriteLine("help");
-            Console.WriteLine("stvori mapu 'ime mape'");
-            Console.WriteLine("stvori datoteku 'ime datoteke'");
-            Console.WriteLine("uđi u mapu 'ime mape'");
-            Console.WriteLine("uredi datoteku 'ime datoteke'");
-            Console.WriteLine("izbrisi mapu/datoteku 'ime mape/datoteke'");
-            Console.WriteLine("promjeni naziv mape/datoteke 'ime mape/datoteke' u 'novo ime mape/datoteke'");
-            Console.WriteLine("povratak");
+            Console.WriteLine("\nhelp                          - Display all commands");
+            Console.WriteLine("stvori mapu 'ime mape'        - Create a folder with the specified name");
+            Console.WriteLine("stvori datoteku 'ime datoteke'- Create a file with the specified name");
+            Console.WriteLine("uđi u mapu 'ime mape'         - Navigate into the specified folder");
+            Console.WriteLine("uredi datoteku 'ime datoteke' - Edit the specified file");
+            Console.WriteLine("izbrisi 'ime mape/datoteke'   - Delete the specified folder or file");
+            Console.WriteLine("promjeni naziv 'ime' u 'novo' - Rename a folder or file");
+            Console.WriteLine("povratak                      - Return to the previous folder\n");
         }
+
     }
 }
 

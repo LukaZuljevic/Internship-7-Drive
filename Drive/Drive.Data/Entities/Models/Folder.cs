@@ -12,5 +12,7 @@
             ParentFolderId = parentFolderId;
             DiskId = diskId;
         }
+
+        public List<Item> Items { get; set; } = new List<Item>();
     }
 }

@@ -6,7 +6,7 @@ using Drive.Presentation.Helpers;
 
 namespace Drive.Presentation.Actions
 {
-    public class ViewDiskContentAction : IAction
+    public class DiskContentActions : IAction
     {
         private readonly DiskRepository _diskRepository;
         private readonly UserRepository _userRepository = RepositoryFactory.Create<UserRepository>();
@@ -16,7 +16,7 @@ namespace Drive.Presentation.Actions
         public string ActionName { get; set; } = "My Disk";
         public User User { get; set; }
 
-        public ViewDiskContentAction(DiskRepository diskRepository, User user)
+        public DiskContentActions(DiskRepository diskRepository, User user)
         {
             _diskRepository = diskRepository;
             User = user;
@@ -53,6 +53,9 @@ namespace Drive.Presentation.Actions
                         break;
                     case var _ when Reader.IsCommand(command, "nazad"):
                         commandActions.ReturnToPreviousFolder();
+                        break;
+                    case var _ when Reader.StartsWithCommand(command, "izbrisi"):
+                        commandActions.DeleteItem(command);
                         break;
                     default:
                         Writer.DisplayError("Invalid command. Try again.");

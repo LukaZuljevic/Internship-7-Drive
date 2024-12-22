@@ -194,19 +194,19 @@ namespace Drive.Data.Seeds
             builder.Entity<Files>()
                .HasData(new List<Files>
                {
-                    new Files("Dump Domaci - Notes", "Content for Dump Domaci Notes")
+                    new Files("Dump Domaci.docx", "Content for Dump Domaci Notes")
                     {
                         ItemId = 15,
                         DiskId = 1,
                         ParentFolderId = 1, 
                     },
-                    new Files("Fesb Predavanja - Slides", "Content for Fesb Predavanja Slides")
+                    new Files("Fesb Predavanja.txt", "Content for Fesb Predavanja Slides")
                     {
                         ItemId = 16,
                         DiskId = 1,
                         ParentFolderId = 2, 
                     },
-                    new Files("Web Programiranje - Code", "Content for Web Programiranje Code")
+                    new Files("Web Programiranje.pdf", "Content for Web Programiranje Code")
                     {
                         ItemId = 17,
                         DiskId = 1,

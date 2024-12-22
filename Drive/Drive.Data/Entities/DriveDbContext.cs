@@ -29,6 +29,12 @@ namespace Drive.Data.Entities
                .HasValue<Folder>("Folder")
                .HasValue<Files>("File");
 
+            modelBuilder.Entity<Item>()
+               .HasOne<Folder>()
+               .WithMany(f => f.Items)
+               .HasForeignKey(i => i.ParentFolderId)
+               .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Disk)
                 .WithOne(d => d.User)

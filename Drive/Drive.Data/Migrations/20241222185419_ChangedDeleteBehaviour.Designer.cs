@@ -3,6 +3,7 @@ using System;
 using Drive.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Drive.Data.Migrations
 {
     [DbContext(typeof(DumpDriveDbContext))]
-    partial class DumpDriveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241222185419_ChangedDeleteBehaviour")]
+    partial class ChangedDeleteBehaviour
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 1,
                             Content = "Komentar 1",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5308),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9383),
                             ItemId = 1,
                             UserId = 1
                         },
@@ -64,7 +67,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 2,
                             Content = "Komentar 2",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5859),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9987),
                             ItemId = 2,
                             UserId = 1
                         },
@@ -72,7 +75,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 3,
                             Content = "Komentar 3",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5861),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9989),
                             ItemId = 3,
                             UserId = 1
                         },
@@ -80,7 +83,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 4,
                             Content = "Komentar 4",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5862),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9990),
                             ItemId = 4,
                             UserId = 6
                         },
@@ -88,7 +91,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 5,
                             Content = "Komentar 5",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5863),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9991),
                             ItemId = 5,
                             UserId = 3
                         },
@@ -96,7 +99,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 6,
                             Content = "Komentar 6",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5866),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9994),
                             ItemId = 6,
                             UserId = 2
                         },
@@ -104,7 +107,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 7,
                             Content = "Komentar 7",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5867),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9995),
                             ItemId = 7,
                             UserId = 5
                         },
@@ -112,7 +115,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 8,
                             Content = "Komentar 8",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5868),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9996),
                             ItemId = 8,
                             UserId = 3
                         },
@@ -120,7 +123,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 9,
                             Content = "Komentar 9",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5869),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9997),
                             ItemId = 9,
                             UserId = 2
                         },
@@ -128,7 +131,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 10,
                             Content = "Komentar 10",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5871),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9998),
                             ItemId = 10,
                             UserId = 7
                         },
@@ -136,7 +139,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 11,
                             Content = "Komentar 11",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5872),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9999),
                             ItemId = 11,
                             UserId = 3
                         },
@@ -144,7 +147,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 12,
                             Content = "Komentar 12",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5873),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(9999),
                             ItemId = 12,
                             UserId = 2
                         },
@@ -152,7 +155,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 13,
                             Content = "Komentar 13",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5874),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 587, DateTimeKind.Utc),
                             ItemId = 13,
                             UserId = 1
                         },
@@ -160,7 +163,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 14,
                             Content = "Komentar 14",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5875),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 587, DateTimeKind.Utc).AddTicks(1),
                             ItemId = 14,
                             UserId = 6
                         },
@@ -168,7 +171,7 @@ namespace Drive.Data.Migrations
                         {
                             CommentId = 15,
                             Content = "Komentar 15",
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(5876),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 587, DateTimeKind.Utc).AddTicks(2),
                             ItemId = 13,
                             UserId = 3
                         });
@@ -270,16 +273,11 @@ namespace Drive.Data.Migrations
                     b.Property<int?>("ParentFolderId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ParentFolderItemId")
-                        .HasColumnType("integer");
-
                     b.HasKey("ItemId");
 
                     b.HasIndex("DiskId");
 
                     b.HasIndex("ParentFolderId");
-
-                    b.HasIndex("ParentFolderItemId");
 
                     b.ToTable("Items");
 
@@ -341,7 +339,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(5683),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(839),
                             DiskId = 1,
                             Email = "luka.zuljo@gmail.com",
                             Password = "password"
@@ -349,7 +347,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 2,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(6571),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(1712),
                             DiskId = 2,
                             Email = "ante.antic@gmail.com",
                             Password = "password"
@@ -357,7 +355,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 3,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(6574),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(1716),
                             DiskId = 3,
                             Email = "mate.matic@gmail.com",
                             Password = "password"
@@ -365,7 +363,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 4,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(6590),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(1730),
                             DiskId = 4,
                             Email = "stipe.stipic@gmail.com",
                             Password = "password"
@@ -373,7 +371,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 5,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(6591),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(1731),
                             DiskId = 5,
                             Email = "mijo.mijic@gmail.com",
                             Password = "password"
@@ -381,7 +379,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 6,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(6595),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(1735),
                             DiskId = 6,
                             Email = "roko.rokic@gmail.com",
                             Password = "password"
@@ -389,7 +387,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             UserId = 7,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 982, DateTimeKind.Utc).AddTicks(6596),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(1736),
                             DiskId = 7,
                             Email = "jozo.jozic@gmail.com",
                             Password = "password"
@@ -410,7 +408,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 15,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(4497),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(8599),
                             DiskId = 1,
                             Name = "Dump Domaci.docx",
                             ParentFolderId = 1,
@@ -419,7 +417,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 16,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(4682),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(8784),
                             DiskId = 1,
                             Name = "Fesb Predavanja.txt",
                             ParentFolderId = 2,
@@ -428,7 +426,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 17,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(4684),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(8786),
                             DiskId = 1,
                             Name = "Web Programiranje.pdf",
                             ParentFolderId = 3,
@@ -446,21 +444,21 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 1,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3074),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7249),
                             DiskId = 1,
                             Name = "Dump-domaci"
                         },
                         new
                         {
                             ItemId = 2,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3509),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7674),
                             DiskId = 1,
                             Name = "Fesb-predavanja"
                         },
                         new
                         {
                             ItemId = 3,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3512),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7676),
                             DiskId = 1,
                             Name = "Web-programiranje",
                             ParentFolderId = 2
@@ -468,28 +466,28 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 4,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3666),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7824),
                             DiskId = 2,
                             Name = "Recepti"
                         },
                         new
                         {
                             ItemId = 5,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3668),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7826),
                             DiskId = 2,
                             Name = "Sve-I-Svasta"
                         },
                         new
                         {
                             ItemId = 6,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3673),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7830),
                             DiskId = 3,
                             Name = "Operacijski-sustavi"
                         },
                         new
                         {
                             ItemId = 7,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3674),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7831),
                             DiskId = 3,
                             Name = "Linux",
                             ParentFolderId = 6
@@ -497,7 +495,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 8,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3675),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7832),
                             DiskId = 3,
                             Name = "Windows",
                             ParentFolderId = 6
@@ -505,28 +503,28 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 9,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3676),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7833),
                             DiskId = 4,
                             Name = "Slike"
                         },
                         new
                         {
                             ItemId = 10,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3678),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7835),
                             DiskId = 4,
                             Name = "Dokumenti"
                         },
                         new
                         {
                             ItemId = 11,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3679),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7836),
                             DiskId = 5,
                             Name = "Projekti"
                         },
                         new
                         {
                             ItemId = 12,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3680),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7836),
                             DiskId = 5,
                             Name = "Zavrsni-rad",
                             ParentFolderId = 11
@@ -534,7 +532,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 13,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3681),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7837),
                             DiskId = 5,
                             Name = "Projektni-zadaci",
                             ParentFolderId = 11
@@ -542,7 +540,7 @@ namespace Drive.Data.Migrations
                         new
                         {
                             ItemId = 14,
-                            CreatedAt = new DateTime(2024, 12, 22, 19, 0, 6, 983, DateTimeKind.Utc).AddTicks(3682),
+                            CreatedAt = new DateTime(2024, 12, 22, 18, 54, 18, 586, DateTimeKind.Utc).AddTicks(7898),
                             DiskId = 6,
                             Name = "Folder-za-faks"
                         });
@@ -586,14 +584,9 @@ namespace Drive.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Drive.Data.Entities.Models.Folder", null)
-                        .WithMany("Items")
-                        .HasForeignKey("ParentFolderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Drive.Data.Entities.Models.Folder", "ParentFolder")
                         .WithMany()
-                        .HasForeignKey("ParentFolderItemId");
+                        .HasForeignKey("ParentFolderId");
 
                     b.Navigation("Disk");
 
@@ -637,11 +630,6 @@ namespace Drive.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("SharedItems");
-                });
-
-            modelBuilder.Entity("Drive.Data.Entities.Models.Folder", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

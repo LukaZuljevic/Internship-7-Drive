@@ -14,7 +14,10 @@ namespace Drive.Presentation.Actions
 
         private readonly UserRepository _userRepository;
 
+        private static SharedItemRepository _sharedItemRepository = RepositoryFactory.Create<SharedItemRepository>();
+
         private static FolderRepository _folderRepository = RepositoryFactory.Create<FolderRepository>();
+
         private static FileRepository _filesRepository = RepositoryFactory.Create<FileRepository>();
 
         private readonly User _user;
@@ -26,8 +29,6 @@ namespace Drive.Presentation.Actions
             _userRepository = userRepository;
             _user = user;
         }
-
-
         public void NavigateToFolder(string command)
         {
             var folderName = command.Substring("udi u mapu".Length).Trim();
@@ -147,69 +148,119 @@ namespace Drive.Presentation.Actions
 
             if (file == null)
             {
+                Writer.DisplayError($"File {fileName} does not exist\n");
                 return;
             }
 
             Console.Clear();
 
             var lines = string.IsNullOrEmpty(file.Content)
-                 ? new List<string>()
-                 : file.Content.Trim().Split('\n').Where(line => !string.IsNullOrEmpty(line)).ToList();
-
+                ? new List<string>()
+                : file.Content.Trim().Split('\n').Where(line => !string.IsNullOrEmpty(line)).ToList();
 
             int activeLineIndex = lines.Count;
 
-            Writer.DisplayInfo("========= Edit file =========\n");
-
             while (true)
             {
+                PrintFileContents(lines);
                 Console.Write("> ");
                 var input = Console.ReadLine().Trim();
 
-                if (string.Equals(input, ":save", StringComparison.OrdinalIgnoreCase))
+                switch (input.ToLower())
                 {
-                    file.Content = string.Join("\n", lines);
-                    var result = _filesRepository.Update(file, file.ItemId);
+                    case ":save":
+                        var contents = string.Join("\n", lines);
 
-                    Writer.DisplayInfo("\nSaving...");
-                    Reader.PressAnyKey();
+                        Files newFile = new Files(fileName, contents, file.ParentFolderId, file.DiskId);
 
-                    PrintCurrentFolderContent();
-                    return;
-                }
-                else if (string.Equals(input, ":cancel", StringComparison.OrdinalIgnoreCase))
-                {
-                    Writer.DisplayInfo("\nExiting wihout saving...");
-                    Reader.PressAnyKey();
+                        var result = _filesRepository.Update(newFile, file.ItemId);
 
-                    PrintCurrentFolderContent();
-                    return;
-                }
+                        Writer.DisplayInfo("\nSaving...");
+                        Reader.PressAnyKey();
 
-                if (string.IsNullOrEmpty(input))
-                {
-                    if (activeLineIndex > 0)
-                    {
-                        activeLineIndex--;
-                        lines.RemoveAt(activeLineIndex); 
-                        PrintFileContents(lines); 
-                    }
-                }
-                else
-                {
-                    if (activeLineIndex < lines.Count)
-                    {
-                        lines[activeLineIndex] = input; 
-                    }
-                    else
-                    {
-                        lines.Add(input); 
-                    }
+                        PrintCurrentFolderContent();
+                        return;
 
-                    activeLineIndex = lines.Count;
+                    case ":cancel":
+                        Writer.DisplayInfo("\nExiting without saving...");
+                        Reader.PressAnyKey();
+
+                        PrintCurrentFolderContent();
+                        return;
+
+                    case ":help":
+                        Writer.DisplayInfo("\nAvailable commands:\n");
+                        Writer.DisplayInfo(":save - Save and exit\n");
+                        Writer.DisplayInfo(":cancel - Exit without saving\n");
+                        Writer.DisplayInfo(":help - Display available commands\n");
+                        Reader.PressAnyKey();
+                        break;
+
+                    default:
+                        if (string.IsNullOrEmpty(input))
+                        {
+                            if (activeLineIndex > 0)
+                            {
+                                activeLineIndex--;
+                                lines.RemoveAt(activeLineIndex);
+                                PrintFileContents(lines);
+                            }
+                        }
+                        else
+                        {
+                            if (activeLineIndex < lines.Count)
+                            {
+                                lines[activeLineIndex] = input;
+                            }
+                            else
+                            {
+                                lines.Add(input);
+                            }
+
+                            activeLineIndex = lines.Count;
+                        }
+                        break;
                 }
             }
         }
+
+        public void DeleteItem(string command)
+        {
+            var itemName = string.Empty;
+
+            if(Reader.StartsWithCommand(command, "izbrisi mapu"))
+            {
+                itemName = command.Substring("izbrisi mapu".Length).Trim();
+
+                var folder = _folderRepository.GetByName(itemName, _user);
+
+                if (folder != null) {
+                    _folderRepository.Delete(folder.ItemId);
+                    PrintCurrentFolderContent();
+                }
+                else
+                {
+                    Writer.DisplayError($"Folder {itemName} does not exist");
+                }
+            }
+            else if(Reader.StartsWithCommand(command, "izbrisi datoteku"))
+            {
+                itemName = command.Substring("izbrisi datoteku".Length).Trim();
+
+                var file = _filesRepository.GetByName(itemName, _user);
+
+                if (file != null) {
+                    _filesRepository.Delete(file.ItemId);
+                    PrintCurrentFolderContent();
+                }
+                else
+                {
+                    Writer.DisplayError($"File {itemName} does not exist");
+                }
+            }
+
+        }
+
         private void PrintFileContents(List<string> lines)
         {
             Console.Clear();
@@ -250,3 +301,24 @@ namespace Drive.Presentation.Actions
         }
     }
 }
+
+
+
+//public void ShareItemWith(string command)
+//{
+//    var userEmail = command.Split(" ")[3];
+
+//    var itemName = command.Split(" ")[1];
+
+//    var user = _userRepository.GetByEmail(userEmail);
+
+//    var itemFile = _filesRepository.GetByName(itemName, user);
+
+//    var itemFolder = _folderRepository.GetByName(itemName, user);
+
+//    if(user == null)
+//    {
+//        Writer.DisplayError($"User {userEmail} does not exits");
+//        return;
+//    }         
+//}

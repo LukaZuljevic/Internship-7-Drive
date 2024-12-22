@@ -13,7 +13,7 @@ namespace Drive.Presentation.Factories
         {
             var actions = new List<IAction>
             {
-                new ViewDiskContentAction(RepositoryFactory.Create<DiskRepository>(), user),
+                new DiskContentActions(RepositoryFactory.Create<DiskRepository>(), user),
                 new SharedItemsActions(RepositoryFactory.Create<SharedItemRepository>(), user),
                 new ChangeProfileSettingsActions(RepositoryFactory.Create<UserRepository>(), user),
                 new LogoutAction(),

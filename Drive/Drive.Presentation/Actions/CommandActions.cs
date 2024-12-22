@@ -58,6 +58,8 @@ namespace Drive.Presentation.Actions
             }
         }
 
+
+        //ovo ispod posalji u helper
         public void PrintCurrentFolderContent()
         {
             Console.Clear();
@@ -96,6 +98,9 @@ namespace Drive.Presentation.Actions
         {
             var folderName = command.Substring("stvori mapu".Length).Trim();
 
+            if (CheckIfNameAlreadyExists(folderName))
+                return;
+
             if (folderName.Length == 0)
             {
                 Writer.DisplayError("Folder name cannot be empty\n");
@@ -119,6 +124,9 @@ namespace Drive.Presentation.Actions
         public void CreateFileInCurrentLocation(string command)
         {
             var fileName = command.Substring("stvori datoteku".Length).Trim();
+
+            if (CheckIfNameAlreadyExists(fileName))
+                return;
 
             if (fileName.Length == 0)
             {
@@ -162,7 +170,7 @@ namespace Drive.Presentation.Actions
 
             while (true)
             {
-                PrintFileContents(lines);
+                Writer.PrintFileContents(lines);
                 Console.Write("> ");
                 var input = Console.ReadLine().Trim();
 
@@ -203,7 +211,7 @@ namespace Drive.Presentation.Actions
                             {
                                 activeLineIndex--;
                                 lines.RemoveAt(activeLineIndex);
-                                PrintFileContents(lines);
+                                Writer.PrintFileContents(lines);
                             }
                         }
                         else
@@ -261,13 +269,64 @@ namespace Drive.Presentation.Actions
 
         }
 
-        private void PrintFileContents(List<string> lines)
-        {
-            Console.Clear();
-            Writer.DisplayInfo("========= Edit file =========\n");
-            foreach (var line in lines)
+        public void ChangeItemName(string command)
+        { 
+            if(command.Split(" ").Length < 6)
             {
-                Console.WriteLine("> " + line);
+                Writer.DisplayError("Invalid command");
+                return;
+            }
+             var oldName = command.Split(" ")[3];
+             var newName = command.Split(" ")[5];
+
+            if (CheckIfNameAlreadyExists(newName))
+                return;
+
+            if (Reader.StartsWithCommand(command, "promjeni naziv mape"))
+            {
+                var folder = _folderRepository.GetByName(oldName, _user);
+
+                if (folder != null)
+                {
+                    folder.Name = newName;
+                    var result = _folderRepository.Update(folder, folder.ItemId);
+
+                    if(result == ResponseResultType.Success)
+                    {
+                        PrintCurrentFolderContent();
+                    }
+                    else
+                    {
+                        Writer.DisplayError($"Failed to rename folder '{oldName}'. Please try again.\n");
+                    }
+                }
+                else
+                {
+                    Writer.DisplayError($"Folder {oldName} does not exist");
+                }
+            }
+            else if (Reader.StartsWithCommand(command, "promjeni naziv datoteke"))
+            {
+                var file = _filesRepository.GetByName(oldName, _user);
+
+                if (file != null)
+                {
+                    file.Name = newName;
+                    var result = _filesRepository.Update(file, file.ItemId);
+
+                    if (result == ResponseResultType.Success)
+                    {
+                        PrintCurrentFolderContent();
+                    }
+                    else
+                    {
+                        Writer.DisplayError($"Failed to rename file '{oldName}'. Please try again.\n");
+                    }
+                }
+                else
+                {
+                    Writer.DisplayError($"File {oldName} does not exist");
+                }
             }
         }
 
@@ -298,6 +357,21 @@ namespace Drive.Presentation.Actions
             return _currentFolder == null
                 ? new Files(fileName, " ", null, _user.DiskId)
                 : new Files(fileName, " ", _currentFolder.ItemId, _user.DiskId);
+        }
+
+        //posalji ovaj ispod u helper
+        public bool CheckIfNameAlreadyExists(string name) 
+        {
+            var folders = GetFoldersInCurrentLocation();
+            var files = GetFilesInCurrentLocation();
+
+            if(folders.Any(f => f.Name == name) || files.Any(f => f.Name == name))
+            {
+                Writer.DisplayError($"Name {name} already exists in this location");
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -68,6 +68,16 @@ namespace Drive.Presentation.Helpers
             Console.WriteLine("povratak                      - Return to the previous folder\n");
         }
 
+        public static void PrintFileContents(List<string> lines)
+        {
+            Console.Clear();
+            Writer.DisplayInfo("========= Edit file =========\n");
+            foreach (var line in lines)
+            {
+                Console.WriteLine("> " + line);
+            }
+        }
+
     }
 }
 

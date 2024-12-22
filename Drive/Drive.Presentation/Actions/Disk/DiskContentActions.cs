@@ -57,6 +57,9 @@ namespace Drive.Presentation.Actions
                     case var _ when Reader.StartsWithCommand(command, "izbrisi"):
                         commandActions.DeleteItem(command);
                         break;
+                    case var _ when Reader.StartsWithCommand(command, "promjeni naziv"):
+                        commandActions.ChangeItemName(command);
+                        break;
                     default:
                         Writer.DisplayError("Invalid command. Try again.");
                         break;

@@ -40,9 +40,6 @@ namespace Drive.Domain.Repositories
 
             return SaveChanges();
         }
-
-        public Folder? GetById(int folderId) => DbContext.Folders.FirstOrDefault(f => f.ItemId == folderId);
-
         public Folder? GetByName(string folderName, User user) => DbContext.Folders.FirstOrDefault(f => f.Name == folderName && user.DiskId == f.DiskId);
     }
 }

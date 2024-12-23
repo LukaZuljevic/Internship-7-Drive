@@ -2,6 +2,11 @@
 {
     public class SharedItem
     {
+        public SharedItem(int itemId, int userId)
+        {
+            ItemId = itemId;
+            UserId = userId;
+        }
         public int SharedItemId { get; set; }
 
         public int ItemId { get; set; }

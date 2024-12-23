@@ -236,13 +236,14 @@ namespace Drive.Presentation.Actions
         {
             var itemName = string.Empty;
 
-            if(Reader.StartsWithCommand(command, "izbrisi mapu"))
+            if (Reader.StartsWithCommand(command, "izbrisi mapu"))
             {
                 itemName = command.Substring("izbrisi mapu".Length).Trim();
 
                 var folder = _folderRepository.GetByName(itemName, _user);
 
-                if (folder != null) {
+                if (folder != null)
+                {
                     _folderRepository.Delete(folder.ItemId);
                     PrintCurrentFolderContent();
                 }
@@ -251,13 +252,14 @@ namespace Drive.Presentation.Actions
                     Writer.DisplayError($"Folder {itemName} does not exist");
                 }
             }
-            else if(Reader.StartsWithCommand(command, "izbrisi datoteku"))
+            else if (Reader.StartsWithCommand(command, "izbrisi datoteku"))
             {
                 itemName = command.Substring("izbrisi datoteku".Length).Trim();
 
                 var file = _filesRepository.GetByName(itemName, _user);
 
-                if (file != null) {
+                if (file != null)
+                {
                     _filesRepository.Delete(file.ItemId);
                     PrintCurrentFolderContent();
                 }
@@ -270,14 +272,14 @@ namespace Drive.Presentation.Actions
         }
 
         public void ChangeItemName(string command)
-        { 
-            if(command.Split(" ").Length < 6)
+        {
+            if (command.Split(" ").Length < 6)
             {
                 Writer.DisplayError("Invalid command");
                 return;
             }
-             var oldName = command.Split(" ")[3];
-             var newName = command.Split(" ")[5];
+            var oldName = command.Split(" ")[3];
+            var newName = command.Split(" ")[5];
 
             if (CheckIfNameAlreadyExists(newName))
                 return;
@@ -291,7 +293,7 @@ namespace Drive.Presentation.Actions
                     folder.Name = newName;
                     var result = _folderRepository.Update(folder, folder.ItemId);
 
-                    if(result == ResponseResultType.Success)
+                    if (result == ResponseResultType.Success)
                     {
                         PrintCurrentFolderContent();
                     }
@@ -330,6 +332,49 @@ namespace Drive.Presentation.Actions
             }
         }
 
+        public void ShareItem(string command)
+        {
+            var userEmail = command.Split(" ")[3];
+            var itemName = command.Split(" ")[1];
+
+            var user = _userRepository.GetByEmail(userEmail);
+
+            var itemFile = _filesRepository.GetByName(itemName, _user);
+            var itemFolder = _folderRepository.GetByName(itemName, _user);
+
+            if(itemFile is null && itemFolder is null)
+            {
+                Writer.DisplayError($"Item {itemName} does not exist");
+                return;
+            }
+
+            Item selectedItem = null;
+
+            selectedItem = itemFolder is null ? itemFile : itemFolder;
+
+            SharedItem itemToShare = new SharedItem(selectedItem.ItemId, user.UserId);
+
+            if (selectedItem == null)
+                Console.WriteLine($"No file or folder found with name {itemName}.");
+        
+            if (user is null)
+            {
+                Writer.DisplayError($"User {userEmail} does not exits");
+                return;
+            }
+
+            var result = _sharedItemRepository.Add(itemToShare);
+
+            if(result == ResponseResultType.Success)
+            {
+                Writer.DisplaySuccess($"Item {itemName} shared with user {userEmail}");
+            }
+            else
+            {
+                Writer.DisplayError($"Failed to share item {itemName} with user {userEmail}");
+            }
+        }
+
         private List<Folder> GetFoldersInCurrentLocation()
         {
 
@@ -360,12 +405,12 @@ namespace Drive.Presentation.Actions
         }
 
         //posalji ovaj ispod u helper
-        public bool CheckIfNameAlreadyExists(string name) 
+        public bool CheckIfNameAlreadyExists(string name)
         {
             var folders = GetFoldersInCurrentLocation();
             var files = GetFilesInCurrentLocation();
 
-            if(folders.Any(f => f.Name == name) || files.Any(f => f.Name == name))
+            if (folders.Any(f => f.Name == name) || files.Any(f => f.Name == name))
             {
                 Writer.DisplayError($"Name {name} already exists in this location");
                 return true;
@@ -375,24 +420,3 @@ namespace Drive.Presentation.Actions
         }
     }
 }
-
-
-
-//public void ShareItemWith(string command)
-//{
-//    var userEmail = command.Split(" ")[3];
-
-//    var itemName = command.Split(" ")[1];
-
-//    var user = _userRepository.GetByEmail(userEmail);
-
-//    var itemFile = _filesRepository.GetByName(itemName, user);
-
-//    var itemFolder = _folderRepository.GetByName(itemName, user);
-
-//    if(user == null)
-//    {
-//        Writer.DisplayError($"User {userEmail} does not exits");
-//        return;
-//    }         
-//}

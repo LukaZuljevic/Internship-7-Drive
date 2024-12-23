@@ -31,6 +31,7 @@ namespace Drive.Presentation.Actions
 
             while (true)
             {
+
                 Reader.TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
                 command = command.Trim();
 
@@ -59,6 +60,9 @@ namespace Drive.Presentation.Actions
                         break;
                     case var _ when Reader.StartsWithCommand(command, "promjeni naziv"):
                         commandActions.ChangeItemName(command);
+                        break;
+                    case var _ when Reader.StartsWithCommand(command, "podjeli"):
+                        commandActions.ShareItem(command);
                         break;
                     default:
                         Writer.DisplayError("Invalid command. Try again.");

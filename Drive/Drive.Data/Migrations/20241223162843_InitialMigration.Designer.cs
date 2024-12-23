@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Drive.Data.Migrations
 {
     [DbContext(typeof(DumpDriveDbContext))]
-    [Migration("20241219183341_InitialMigra")]
-    partial class InitialMigra
+    [Migration("20241223162843_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,9 +107,16 @@ namespace Drive.Data.Migrations
                     b.Property<int?>("ParentFolderId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ParentFolderItemId")
+                        .HasColumnType("integer");
+
                     b.HasKey("ItemId");
 
                     b.HasIndex("DiskId");
+
+                    b.HasIndex("ParentFolderId");
+
+                    b.HasIndex("ParentFolderItemId");
 
                     b.ToTable("Items");
 
@@ -128,6 +135,10 @@ namespace Drive.Data.Migrations
 
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -176,16 +187,12 @@ namespace Drive.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasIndex("ParentFolderId");
-
                     b.HasDiscriminator().HasValue("File");
                 });
 
             modelBuilder.Entity("Drive.Data.Entities.Models.Folder", b =>
                 {
                     b.HasBaseType("Drive.Data.Entities.Models.Item");
-
-                    b.HasIndex("ParentFolderId");
 
                     b.HasDiscriminator().HasValue("Folder");
                 });
@@ -228,7 +235,18 @@ namespace Drive.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Drive.Data.Entities.Models.Folder", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ParentFolderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Drive.Data.Entities.Models.Folder", "ParentFolder")
+                        .WithMany()
+                        .HasForeignKey("ParentFolderItemId");
+
                     b.Navigation("Disk");
+
+                    b.Navigation("ParentFolder");
                 });
 
             modelBuilder.Entity("Drive.Data.Entities.Models.SharedItem", b =>
@@ -248,24 +266,6 @@ namespace Drive.Data.Migrations
                     b.Navigation("Item");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Drive.Data.Entities.Models.Files", b =>
-                {
-                    b.HasOne("Drive.Data.Entities.Models.Folder", "ParentFolder")
-                        .WithMany("Files")
-                        .HasForeignKey("ParentFolderId");
-
-                    b.Navigation("ParentFolder");
-                });
-
-            modelBuilder.Entity("Drive.Data.Entities.Models.Folder", b =>
-                {
-                    b.HasOne("Drive.Data.Entities.Models.Folder", "ParentFolder")
-                        .WithMany()
-                        .HasForeignKey("ParentFolderId");
-
-                    b.Navigation("ParentFolder");
                 });
 
             modelBuilder.Entity("Drive.Data.Entities.Models.Disk", b =>
@@ -290,7 +290,7 @@ namespace Drive.Data.Migrations
 
             modelBuilder.Entity("Drive.Data.Entities.Models.Folder", b =>
                 {
-                    b.Navigation("Files");
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

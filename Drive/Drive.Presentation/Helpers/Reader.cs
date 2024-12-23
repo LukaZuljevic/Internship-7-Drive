@@ -1,9 +1,11 @@
-﻿using Drive.Domain.Repositories;
+﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Repositories;
+using Drive.Presentation.Actions;
 
 namespace Drive.Presentation.Helpers
 {
     public class Reader
-    {
+    {   
         public static void PressAnyKey()
         {
             Console.WriteLine("\nPress any key to continue...");
@@ -116,6 +118,7 @@ namespace Drive.Presentation.Helpers
                 Writer.DisplayError("Incorrect captcha. Please try again.\n");
             }
         }
+
         public static bool IsCommand(string input, string expectedCommand)
         {
             return input.Equals(expectedCommand, StringComparison.OrdinalIgnoreCase);
@@ -124,6 +127,17 @@ namespace Drive.Presentation.Helpers
         public static bool StartsWithCommand(string input, string prefix)
         {
             return input.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool CheckIfNameAlreadyExists(string name, List<Folder> folders, List<Files> files)
+        {
+            if (folders.Any(f => f.Name == name) || files.Any(f => f.Name == name))
+            {
+                Writer.DisplayError($"Name {name} already exists in this location\n");
+                return true;
+            }
+
+            return false;
         }
     }
 }

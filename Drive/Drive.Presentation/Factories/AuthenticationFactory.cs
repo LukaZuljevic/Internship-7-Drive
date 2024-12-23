@@ -14,7 +14,7 @@ namespace Drive.Presentation.Factories
             {
                 new RegisterAction(RepositoryFactory.Create<UserRepository>()),
                 new LoginAction(RepositoryFactory.Create<UserRepository>()),
-                new ExitAppAction()
+                new LogoutAction("Exit the app")
             };
 
             return actions;

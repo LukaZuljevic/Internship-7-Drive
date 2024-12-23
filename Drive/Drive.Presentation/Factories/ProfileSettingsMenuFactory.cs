@@ -14,7 +14,7 @@ namespace Drive.Presentation.Factories
             {
                 new ChangeEmailAction(RepositoryFactory.Create<UserRepository>(), user),
                 new ChangePasswordAction(RepositoryFactory.Create<UserRepository>(), user),
-                new LogoutAction(),
+                new LogoutAction("Return"),
             };
 
             return actions;

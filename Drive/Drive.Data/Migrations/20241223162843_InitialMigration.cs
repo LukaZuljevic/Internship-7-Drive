@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Drive.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigra : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,6 +59,7 @@ namespace Drive.Data.Migrations
                     LastChangedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DiskId = table.Column<int>(type: "integer", nullable: false),
                     ParentFolderId = table.Column<int>(type: "integer", nullable: true),
+                    ParentFolderItemId = table.Column<int>(type: "integer", nullable: true),
                     Item_type = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
                     Content = table.Column<string>(type: "text", nullable: true)
                 },
@@ -74,6 +75,12 @@ namespace Drive.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Items_Items_ParentFolderId",
                         column: x => x.ParentFolderId,
+                        principalTable: "Items",
+                        principalColumn: "ItemId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Items_Items_ParentFolderItemId",
+                        column: x => x.ParentFolderItemId,
                         principalTable: "Items",
                         principalColumn: "ItemId");
                 });
@@ -113,7 +120,8 @@ namespace Drive.Data.Migrations
                     SharedItemId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ItemId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ItemName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -157,6 +165,11 @@ namespace Drive.Data.Migrations
                 name: "IX_Items_ParentFolderId",
                 table: "Items",
                 column: "ParentFolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Items_ParentFolderItemId",
+                table: "Items",
+                column: "ParentFolderItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SharedItems_ItemId",

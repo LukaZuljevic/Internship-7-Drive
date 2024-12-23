@@ -26,6 +26,7 @@ namespace Drive.Domain.Repositories
 
             fileToUpdate.Name = file.Name;
             fileToUpdate.Content = file.Content;
+            fileToUpdate.LastChangedAt = DateTime.UtcNow;
 
             return SaveChanges();
         }

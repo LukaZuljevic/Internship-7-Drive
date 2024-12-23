@@ -36,7 +36,7 @@ namespace Drive.Presentation.Actions
             if (TryNavigateToFolder(folderName))
             {
                 Writer.DisplaySuccess($"Successfully navigated to the folder '{folderName}'.\n");
-                PrintCurrentFolderContent();
+                DisplayFolderContents();
             }
             else
             {
@@ -50,32 +50,12 @@ namespace Drive.Presentation.Actions
             {
                 _currentFolder = _folderHistory.Pop();
                 Writer.DisplayInfo($"Returned to folder: {_currentFolder?.Name ?? "Root"}.\n");
-                PrintCurrentFolderContent();
+                DisplayFolderContents();
             }
             else
             {
                 Writer.DisplayError("You are already at the root folder.\n");
             }
-        }
-
-
-        //ovo ispod posalji u helper
-        public void PrintCurrentFolderContent()
-        {
-            Console.Clear();
-            Writer.DisplayInfo("========== My Disk ==========");
-
-            var location = _currentFolder?.Name ?? "Root";
-            Writer.PrintLocation(location);
-
-            var folders = GetFoldersInCurrentLocation();
-            var files = GetFilesInCurrentLocation();
-
-            Writer.PrintFolders(folders);
-            Console.WriteLine("");
-            Writer.PrintFiles(files);
-
-            Writer.DisplayInfo("\n=============================");
         }
 
         public bool TryNavigateToFolder(string folderName)
@@ -98,7 +78,7 @@ namespace Drive.Presentation.Actions
         {
             var folderName = command.Substring("stvori mapu".Length).Trim();
 
-            if (CheckIfNameAlreadyExists(folderName))
+            if (IsNameDuplicate(folderName))
                 return;
 
             if (folderName.Length == 0)
@@ -113,7 +93,7 @@ namespace Drive.Presentation.Actions
 
             if (result == ResponseResultType.Success)
             {
-                PrintCurrentFolderContent();
+                DisplayFolderContents();
             }
             else
             {
@@ -125,7 +105,7 @@ namespace Drive.Presentation.Actions
         {
             var fileName = command.Substring("stvori datoteku".Length).Trim();
 
-            if (CheckIfNameAlreadyExists(fileName))
+            if (IsNameDuplicate(fileName))
                 return;
 
             if (fileName.Length == 0)
@@ -140,7 +120,7 @@ namespace Drive.Presentation.Actions
 
             if (result == ResponseResultType.Success)
             {
-                PrintCurrentFolderContent();
+                DisplayFolderContents();
             }
             else
             {
@@ -186,21 +166,18 @@ namespace Drive.Presentation.Actions
                         Writer.DisplayInfo("\nSaving...");
                         Reader.PressAnyKey();
 
-                        PrintCurrentFolderContent();
+                        DisplayFolderContents();
                         return;
 
                     case ":cancel":
                         Writer.DisplayInfo("\nExiting without saving...");
                         Reader.PressAnyKey();
 
-                        PrintCurrentFolderContent();
+                        DisplayFolderContents();
                         return;
 
                     case ":help":
-                        Writer.DisplayInfo("\nAvailable commands:\n");
-                        Writer.DisplayInfo(":save - Save and exit\n");
-                        Writer.DisplayInfo(":cancel - Exit without saving\n");
-                        Writer.DisplayInfo(":help - Display available commands\n");
+                        Writer.PrintAllCommands();
                         Reader.PressAnyKey();
                         break;
 
@@ -245,7 +222,7 @@ namespace Drive.Presentation.Actions
                 if (folder != null)
                 {
                     _folderRepository.Delete(folder.ItemId);
-                    PrintCurrentFolderContent();
+                    DisplayFolderContents();
                 }
                 else
                 {
@@ -261,7 +238,7 @@ namespace Drive.Presentation.Actions
                 if (file != null)
                 {
                     _filesRepository.Delete(file.ItemId);
-                    PrintCurrentFolderContent();
+                    DisplayFolderContents();
                 }
                 else
                 {
@@ -281,7 +258,7 @@ namespace Drive.Presentation.Actions
             var oldName = command.Split(" ")[3];
             var newName = command.Split(" ")[5];
 
-            if (CheckIfNameAlreadyExists(newName))
+            if (IsNameDuplicate(newName))
                 return;
 
             if (Reader.StartsWithCommand(command, "promjeni naziv mape"))
@@ -295,7 +272,7 @@ namespace Drive.Presentation.Actions
 
                     if (result == ResponseResultType.Success)
                     {
-                        PrintCurrentFolderContent();
+                        DisplayFolderContents();
                     }
                     else
                     {
@@ -318,7 +295,7 @@ namespace Drive.Presentation.Actions
 
                     if (result == ResponseResultType.Success)
                     {
-                        PrintCurrentFolderContent();
+                        DisplayFolderContents();
                     }
                     else
                     {
@@ -427,7 +404,7 @@ namespace Drive.Presentation.Actions
             }
         }
 
-        private List<Folder> GetFoldersInCurrentLocation()
+        public List<Folder> GetFoldersInCurrentLocation()
         {
 
             return _currentFolder == null
@@ -435,7 +412,7 @@ namespace Drive.Presentation.Actions
                 : _userRepository.GetUserFolders(_user).Where(f => f.ParentFolderId == _currentFolder.ItemId).ToList();
         }
 
-        private List<Files> GetFilesInCurrentLocation()
+        public List<Files> GetFilesInCurrentLocation()
         {
             return _currentFolder == null
                 ? _userRepository.GetUserFiles(_user)
@@ -456,19 +433,20 @@ namespace Drive.Presentation.Actions
                 : new Files(fileName, " ", _currentFolder.ItemId, _user.DiskId);
         }
 
-        //posalji ovaj ispod u helper
-        public bool CheckIfNameAlreadyExists(string name)
+        public bool IsNameDuplicate(string name)
         {
             var folders = GetFoldersInCurrentLocation();
             var files = GetFilesInCurrentLocation();
 
-            if (folders.Any(f => f.Name == name) || files.Any(f => f.Name == name))
-            {
-                Writer.DisplayError($"Name {name} already exists in this location");
-                return true;
-            }
+            return Reader.CheckIfNameAlreadyExists(name, folders, files);
+        }
 
-            return false;
+        public void DisplayFolderContents()
+        {
+            var folders = GetFoldersInCurrentLocation();
+            var files = GetFilesInCurrentLocation();
+
+            Writer.PrintCurrentFolderContent(_currentFolder, folders, files);
         }
     }
 }

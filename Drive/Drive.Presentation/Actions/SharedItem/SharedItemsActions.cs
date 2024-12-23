@@ -19,12 +19,7 @@ namespace Drive.Presentation.Actions
         public void Open()
         {
 
-            var actions = new List<IAction>
-            {
-                new ExitAppAction()
-            };
-
-            actions.PrintActions();
+            
         }
     }
 }

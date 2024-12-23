@@ -32,30 +32,31 @@ namespace Drive.Presentation.Extensions
                 {
                     var selectedAction = actions[choice - 1];
 
-                    if (selectedAction is LogoutAction)
+                    var actionHandlers = new Dictionary<string, Action> 
                     {
-                        Writer.DisplayInfo("Logging out.");
-                        return; 
-                    }
+                          { "Logout", () => { Writer.DisplayInfo("Logging out..."); } },
+                          { "Exit the app", () => { Writer.DisplayInfo("Exiting the app..."); } },
+                          { "Return", () => { Writer.DisplayInfo("Returning..."); } }
+                    };
 
-                    if (selectedAction is ExitAppAction)
+                    if (actionHandlers.TryGetValue(selectedAction.ActionName, out var handler))
                     {
-                        Writer.DisplayInfo("Exiting the application.");
-                        Environment.Exit(0);
+                        handler();
+                        return;
                     }
 
                     selectedAction.Open();
-
                     Console.Clear();
                     PrintActions(actions, header);
                     return;
                 }
                 else
                 {
-                    Writer.DisplayError($"Invalid option. Please try again.");
+                    Writer.DisplayError("Invalid option. Please try again.");
                 }
             }
         }
+
     }
 }
     

@@ -6,10 +6,10 @@ namespace Drive.Presentation.Actions
     {
         public string ActionName { get; set; } = "Logout";
 
-        public LogoutAction()
+        public LogoutAction(string actionName)
         {
+            ActionName = actionName;
         }
-
         public void Open()
         {
         }

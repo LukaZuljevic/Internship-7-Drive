@@ -47,11 +47,16 @@ namespace Drive.Presentation.Actions.Authentications
 
             Reader.TryReadInput("Enter disk name", out string name);
 
-            var disk = new Disk(name, user.UserId);
+            var newDisk = new Disk(name, user.UserId);
 
-            result = _diskRepository.Add(disk);
+            result = _diskRepository.Add(newDisk);
             if (result != ResponseResultType.Success)
                 Writer.DisplayError("Error creating disk");
+
+            Disk disk = _diskRepository.GetById(user.UserId);
+
+            user.DiskId = disk.UserId;
+            _userRepository.Update(user,user.UserId);
 
             Writer.DisplaySuccess("\nRegistration successful!");
             Reader.PressAnyKey();

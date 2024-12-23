@@ -15,7 +15,7 @@ namespace Drive.Presentation.Factories
                 new DiskContentActions(RepositoryFactory.Create<DiskRepository>(), user),
                 new SharedItemsActions(RepositoryFactory.Create<SharedItemRepository>(), user),
                 new ChangeProfileSettingsActions(RepositoryFactory.Create<UserRepository>(), user),
-                new LogoutAction(),
+                new LogoutAction("Logout"),
             };
 
             return actions;

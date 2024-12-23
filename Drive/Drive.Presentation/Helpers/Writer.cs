@@ -71,12 +71,34 @@ namespace Drive.Presentation.Helpers
         public static void PrintFileContents(List<string> lines)
         {
             Console.Clear();
-            Writer.DisplayInfo("========= Edit file =========\n");
+            DisplayInfo("========= Edit file =========\n");
 
             foreach (var line in lines)
                 Console.WriteLine("> " + line);
 
         }
 
+        public static void PrintCurrentFolderContent(Folder? currentFolder, List<Folder> folders, List<Files> files)
+        {
+            Console.Clear();
+            DisplayInfo("========== My Disk ==========");
+
+            var location = currentFolder?.Name ?? "Root";
+            PrintLocation(location);
+
+            PrintFolders(folders);
+            Console.WriteLine("");
+            PrintFiles(files);
+
+            DisplayInfo("\n=============================");
+        }
+
+        public static void PrintAllCommands()
+        {
+            DisplayInfo("\nAvailable commands:\n");
+            DisplayInfo(":save - Save and exit\n");
+            DisplayInfo(":cancel - Exit without saving\n");
+            DisplayInfo(":help - Display available commands\n");
+        }
     }
 }

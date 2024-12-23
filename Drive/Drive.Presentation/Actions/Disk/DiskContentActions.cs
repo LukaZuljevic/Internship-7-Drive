@@ -27,7 +27,7 @@ namespace Drive.Presentation.Actions
             Console.Clear();
 
             var commandActions = new CommandActions(_currentFolder, _folderHistory, _userRepository, User);
-            commandActions.PrintCurrentFolderContent();
+            commandActions.DisplayFolderContents();
 
             while (true)
             {

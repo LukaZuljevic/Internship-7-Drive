@@ -2,13 +2,10 @@
 {
     public class User
     {
-        private static int _nextDiskId = 1;
-
         public User(string email, string password)
         {
             Email = email;
             Password = password;
-            DiskId = _nextDiskId++;
         }
 
         public int UserId { get; set; }

@@ -44,7 +44,7 @@ namespace Drive.Presentation.Extensions
                         Environment.Exit(0);
                     }
 
-                    selectedAction?.Open();
+                    selectedAction.Open();
 
                     Console.Clear();
                     PrintActions(actions, header);

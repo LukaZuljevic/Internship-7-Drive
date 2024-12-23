@@ -1,9 +1,9 @@
 ﻿using Drive.Data.Entities.Models;
-using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 using Drive.Presentation.Abstractions;
-using Drive.Domain.Enums;
+using Drive.Presentation.Factories;
+using Drive.Presentation.Extensions;
 
 namespace Drive.Presentation.Actions
 {
@@ -23,65 +23,9 @@ namespace Drive.Presentation.Actions
         {
             Console.Clear();
 
-            while (true)
-            {
-                Writer.DisplayInfo("========== Profile Settings ==========\n");
-                Console.WriteLine("1. Change Email\n2. Change Password\n3. Back to Main Menu");
+            var settingsActions = ProfileSettingsMenuFactory.CreateActions(User);
+            settingsActions.PrintActions("========== Profile Settings ==========\n");
 
-                Reader.TryReadInput("\nSelect an option", out var input);
-
-                switch (input)
-                {
-                    case "1":
-                        ChangeEmail();
-                        break;
-                    case "2":
-                        ChangePassword();
-                        break;
-                    case "3":
-                        return;
-                    default:
-                        Writer.DisplayError("Invalid option. Please try again.");
-                        break;
-                }
-            }
-        }
-
-        private void ChangeEmail()
-        {
-            var email = string.Empty;
-            do
-            {
-                email = Reader.TryReadEmail("Enter your new email address");
-            }
-            while (UserActions.IsEmailAlreadyInUse(email));
-
-            User.Email = email;
-            var result = _userRepository.Update(User, User.UserId);
-
-            Writer.DisplayInfo(result == ResponseResultType.Success
-                 ? "Email updated successfully!"
-                 : "Failed to update email. Please try again.");
-
-            Reader.PressAnyKey();
-
-            Console.Clear();
-        }
-
-        private void ChangePassword()
-        {
-            var password = Reader.ConfirmPassword();
-
-            User.Password = password;
-            var result = _userRepository.Update(User, User.UserId);
-
-            Writer.DisplayInfo(result == ResponseResultType.Success
-                  ? "Password updated successfully!"
-                  : "Failed to update Password. Please try again.");
-
-            Reader.PressAnyKey();
-
-            Console.Clear();
-        }
+        }       
     }
 }

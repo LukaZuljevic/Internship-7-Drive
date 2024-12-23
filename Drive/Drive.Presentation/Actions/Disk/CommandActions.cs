@@ -3,7 +3,6 @@ using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 using Drive.Domain.Enums;
-using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace Drive.Presentation.Actions
 {
@@ -276,7 +275,7 @@ namespace Drive.Presentation.Actions
         {
             if (command.Split(" ").Length < 6)
             {
-                Writer.DisplayError("Invalid command");
+                Writer.DisplayError("Invalid command. Try again.");
                 return;
             }
             var oldName = command.Split(" ")[3];
@@ -335,90 +334,96 @@ namespace Drive.Presentation.Actions
 
         public void ShareItem(string command)
         {
-            if (command.Split(" ").Length < 4)
+            var commandParts = command.Split(" ");
+            if (commandParts.Length < 4)
             {
-                Writer.DisplayError("Invalid command");
+                Writer.DisplayError("Invalid command. Try again.\n");
                 return;
             }
-            var userEmail = command.Split(" ")[3];
-            var itemName = command.Split(" ")[1];
 
-            var user = _userRepository.GetByEmail(userEmail);
+            var itemName = commandParts[1];
+            var userEmail = commandParts[3];
+
+            var userToReceiveItem = _userRepository.GetByEmail(userEmail);
+            if (userToReceiveItem is null)
+            {
+                Writer.DisplayError($"User {userEmail} does not exits\n");
+                return;
+            }
 
             var itemFile = _filesRepository.GetByName(itemName, _user);
             var itemFolder = _folderRepository.GetByName(itemName, _user);
-
             if (itemFile is null && itemFolder is null)
             {
-                Writer.DisplayError($"Item {itemName} does not exist");
+                Writer.DisplayError($"Item {itemName} does not exist\n");
                 return;
             }
 
-            Item selectedItem = null;
-            selectedItem = itemFolder is null ? itemFile : itemFolder;
-
-            SharedItem itemToShare = new SharedItem(selectedItem.ItemId, user.UserId, selectedItem.Name);
-
-            //dodaj provjeru da vidis jel se taj item vec dijeli
-
-            if (selectedItem == null)
-                Console.WriteLine($"No file or folder found with name {itemName}.");
-
-            if (user is null)
+            var sharedItem = _sharedItemRepository.GetByName(itemName);
+            if (sharedItem is not null)
             {
-                Writer.DisplayError($"User {userEmail} does not exits");
+                Writer.DisplayError($"Item {itemName} is already being shared\n");
                 return;
             }
 
+            Item selectedItem = itemFolder is null ? itemFile : itemFolder;
+
+            if (selectedItem is null)
+                Console.WriteLine($"No file or folder found with name {itemName}.\n");
+
+            if (userToReceiveItem is null)
+            {
+                Writer.DisplayError($"User {userEmail} does not exits\n");
+                return;
+            }
+
+            SharedItem itemToShare = new SharedItem(selectedItem.ItemId, userToReceiveItem.UserId, selectedItem.Name);
             var result = _sharedItemRepository.Add(itemToShare);
 
             if (result == ResponseResultType.Success)
             {
-                Writer.DisplaySuccess($"Item {itemName} shared with user {userEmail}");
+                Writer.DisplaySuccess($"Item {itemName} shared with user {userEmail}\n");
             }
             else
             {
-                Writer.DisplayError($"Failed to share item {itemName} with user {userEmail}");
+                Writer.DisplayError($"Failed to share item {itemName} with user {userEmail}\n");
             }
         }
 
         public void StopSharingItem(string command)
         {
-
-            if (command.Split(" ").Length < 5)
+            var commandParts = command.Split(" ");
+            if (commandParts.Length < 5)
             {
-                Writer.DisplayError("Invalid command");
+                Writer.DisplayError("Invalid command. Try again.\n");
                 return;
             }
 
-            var userEmail = command.Split(" ")[4];
-            var itemName = command.Split(" ")[2];
+            var itemName = commandParts[2];
+            var userEmail = commandParts[4];
 
             var user = _userRepository.GetByEmail(userEmail);
-
             if (user is null)
             {
-                Writer.DisplayError($"User {userEmail} does not exits");
+                Writer.DisplayError($"User {userEmail} does not exits\n");
                 return;
             }
 
             var sharedItem = _sharedItemRepository.GetByName(itemName);
-
             if (sharedItem is null)
             {
-                Writer.DisplayError($"Item {itemName} is not shared");
+                Writer.DisplayError($"Item {itemName} is not shared or does not exist\n");
                 return;
             }
 
             var result = _sharedItemRepository.Delete(sharedItem.SharedItemId);
-
             if (result == ResponseResultType.Success)
             {
-                Writer.DisplaySuccess($"You stoped sharing item {itemName} with user {userEmail}");
+                Writer.DisplaySuccess($"You stopped sharing item {itemName} with user {userEmail}\n");
             }
             else
             {
-                Writer.DisplayError($"Failed to stop sharing item {itemName} with user {userEmail}");
+                Writer.DisplayError($"Failed to stop sharing item {itemName} with user {userEmail}\n");
             }
         }
 

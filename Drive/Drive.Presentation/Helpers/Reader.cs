@@ -1,4 +1,6 @@
-﻿namespace Drive.Presentation.Helpers
+﻿using Drive.Domain.Repositories;
+
+namespace Drive.Presentation.Helpers
 {
     public class Reader
     {
@@ -47,6 +49,19 @@
 
                 Writer.DisplayError("Invalid email address. Please try again.\n");
             }
+        }
+
+        public static bool IsEmailAlreadyInUse(string email, UserRepository userRepository)
+        {
+            var user = userRepository.GetByEmail(email);
+
+            if (user is not null)
+            {
+                Writer.DisplayError("Email is already in use. Please try again.\n");
+                return true;
+            }
+
+            return false;
         }
 
         public static string TryReadPassword(string message)

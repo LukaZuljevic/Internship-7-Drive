@@ -2,14 +2,16 @@
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 using Drive.Data.Entities.Models;
-using Drive.Presentation.Factories;
+using Drive.Domain.Enums;
+using Drive.Domain.Factories;
+
 
 namespace Drive.Presentation.Actions.Authentications
 {
     public class RegisterAction : IAction
     {
         private readonly UserRepository _userRepository;
-
+        private static DiskRepository _diskRepository = RepositoryFactory.Create<DiskRepository>();
         public string ActionName { get; set; } = "Register";
 
         public RegisterAction(UserRepository userRepository)
@@ -27,15 +29,29 @@ namespace Drive.Presentation.Actions.Authentications
             {
                 email = Reader.TryReadEmail("Enter your email address");
             }
-            while (UserActions.IsEmailAlreadyInUse(email));
+            while (Reader.IsEmailAlreadyInUse(email, _userRepository));
 
             var password = Reader.ConfirmPassword();
-
             var captchaConfirmation = Reader.ConfirmCaptcha();
 
-            UserActions.RegisterUser(email, password);
+            var newUser = new User(email, password);
 
-            CreateDiskAction.Open(email);
+            var result = _userRepository.Add(newUser);
+            if (result != ResponseResultType.Success)
+            {
+                Writer.DisplayError("Registration failed. Please try again.\n");
+                Reader.PressAnyKey();
+            }
+
+            User user = _userRepository.GetByEmail(email);
+
+            Reader.TryReadInput("Enter disk name", out string name);
+
+            var disk = new Disk(name, user.UserId);
+
+            result = _diskRepository.Add(disk);
+            if (result != ResponseResultType.Success)
+                Writer.DisplayError("Error creating disk");
 
             Writer.DisplaySuccess("\nRegistration successful!");
             Reader.PressAnyKey();

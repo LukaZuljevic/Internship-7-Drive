@@ -28,6 +28,6 @@ namespace Drive.Domain.Repositories
             return SaveChanges();
         }
 
-        public SharedItem? GetByName(string sharedItemName) => DbContext.SharedItems.FirstOrDefault(f => f.ItemName == sharedItemName);
+        public SharedItem? GetByNameAndUserId(string sharedItemName, int userId) => DbContext.SharedItems.FirstOrDefault(f => f.ItemName == sharedItemName && f.UserId == userId);
     }
 }

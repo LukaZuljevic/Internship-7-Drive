@@ -252,7 +252,7 @@ namespace Drive.Presentation.Actions
         {
             if (command.Split(" ").Length < 6)
             {
-                Writer.DisplayError("Invalid command. Try again.");
+                Writer.DisplayError("Invalid command. Try again.\n");
                 return;
             }
             var oldName = command.Split(" ")[3];
@@ -336,7 +336,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var sharedItem = _sharedItemRepository.GetByName(itemName);
+            var sharedItem = _sharedItemRepository.GetByNameAndUserId(itemName, userToReceiveItem.UserId);
             if (sharedItem is not null)
             {
                 Writer.DisplayError($"Item {itemName} is already being shared\n");
@@ -386,7 +386,7 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            var sharedItem = _sharedItemRepository.GetByName(itemName);
+            var sharedItem = _sharedItemRepository.GetByNameAndUserId(itemName, user.UserId);
             if (sharedItem is null)
             {
                 Writer.DisplayError($"Item {itemName} is not shared or does not exist\n");

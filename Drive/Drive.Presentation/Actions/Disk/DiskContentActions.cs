@@ -61,14 +61,14 @@ namespace Drive.Presentation.Actions
                     case var _ when Reader.StartsWithCommand(command, "promjeni naziv"):
                         commandActions.ChangeItemName(command);
                         break;
-                    case var _ when Reader.StartsWithCommand(command, "podjeli"):
+                    case var _ when Reader.StartsWithCommand(command, "podijeli"):
                         commandActions.ShareItem(command);
                         break;
                     case var _ when Reader.StartsWithCommand(command, "prestani dijeliti"):
                         commandActions.StopSharingItem(command);
                         break;
                     default:
-                        Writer.DisplayError("Invalid command. Try again.");
+                        Writer.DisplayError("Invalid command. Try again.\n");
                         break;
                 }
 

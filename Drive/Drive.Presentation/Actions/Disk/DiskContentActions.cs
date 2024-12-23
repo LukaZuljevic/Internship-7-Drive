@@ -64,6 +64,9 @@ namespace Drive.Presentation.Actions
                     case var _ when Reader.StartsWithCommand(command, "podjeli"):
                         commandActions.ShareItem(command);
                         break;
+                    case var _ when Reader.StartsWithCommand(command, "prestani dijeliti"):
+                        commandActions.StopSharingItem(command);
+                        break;
                     default:
                         Writer.DisplayError("Invalid command. Try again.");
                         break;

@@ -1,6 +1,8 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
+using Drive.Presentation.Helpers;
+using Drive.Domain.Enums;
 
 namespace Drive.Presentation.Actions
 {
@@ -28,17 +30,40 @@ namespace Drive.Presentation.Actions
 
             List<Item> items = new List<Item>();
 
-            foreach(var sharedItem in sharedItems) 
+            //stavi u funkciju
+            foreach (var sharedItem in sharedItems)
             {
                 var item = _itemRepository.GetByItemId(sharedItem.ItemId);
 
-                if(item is not null)
-                   items.Add(item);
+                if (item is not null)
+                    items.Add(item);
             }
 
-            foreach(var item in items)
+            Writer.PrintSharedContent(items);
+        }
+
+        public void DeleteSharedItem(string command)
+        {
+            var itemName = command.Substring("izbrisi".Length).Trim();
+
+            var sharedItem = _sharedItemRepository.GetByNameAndUserId(itemName, User.UserId);
+
+            if (sharedItem is null)
             {
-                Console.WriteLine(item.Name);
+                Writer.DisplayError($"Item {itemName} not found.\n");
+                return;
+            }
+
+            var result = _sharedItemRepository.Delete(sharedItem.SharedItemId);
+
+            if (result == ResponseResultType.Success)
+            {
+                DisplaySharedItems();
+            }
+            else
+            {
+                Writer.DisplayError("Failed to delete an item.\n");
+                Reader.PressAnyKey();
             }
         }
     }

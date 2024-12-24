@@ -177,7 +177,7 @@ namespace Drive.Presentation.Actions
                         return;
 
                     case ":help":
-                        Writer.PrintAllCommands();
+                        Writer.PrintFileEditCommands();
                         Reader.PressAnyKey();
                         break;
 
@@ -213,6 +213,7 @@ namespace Drive.Presentation.Actions
         {
             var itemName = string.Empty;
 
+            //pogledaj jel se sve ovo moze zaminit sa itemrepository
             if (Reader.StartsWithCommand(command, "izbrisi mapu"))
             {
                 itemName = command.Substring("izbrisi mapu".Length).Trim();

@@ -93,12 +93,42 @@ namespace Drive.Presentation.Helpers
             DisplayInfo("\n=============================");
         }
 
-        public static void PrintAllCommands()
+        public static void PrintFileEditCommands()
         {
             DisplayInfo("\nAvailable commands:\n");
             DisplayInfo(":save - Save and exit\n");
             DisplayInfo(":cancel - Exit without saving\n");
             DisplayInfo(":help - Display available commands\n");
+        }
+
+        public static void PrintSharedContent(List<Item> items)
+        {
+            Console.Clear();
+            DisplayInfo("========== Shared With Me ==========");
+
+            List<Folder> folders = new List<Folder>();
+            List<Files> files = new List<Files>();
+
+            foreach (var item in items)
+            {
+                if (item is Folder folder)
+                    folders.Add(folder);
+                else if (item is Files file)
+                    files.Add(file);
+            }
+
+            PrintFolders(folders);
+            Console.WriteLine("");
+            PrintFiles(files);
+
+            DisplayInfo("\n=============================");
+        }
+
+        public static void PrintReducedCommands()
+        {
+            Console.WriteLine("\nhelp                                        - Display all commands");
+            Console.WriteLine("uredi datoteku 'ime datoteke'               - Edit the specified file");
+            Console.WriteLine("izbrisi 'ime mape/datoteke'                 - Delete the specified folder or file\n");
         }
     }
 }

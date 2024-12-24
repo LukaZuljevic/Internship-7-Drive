@@ -36,9 +36,11 @@ namespace Drive.Presentation.Actions
                 switch (true)
                 {
                     case var _ when Reader.IsCommand(command, "help"):
-                        Writer.PrintCommands();
+                        Writer.PrintReducedCommands();
                         break;
-                    
+                    case var _ when Reader.StartsWithCommand(command, "izbrisi"):
+                        sharedItemCommandActions.DeleteSharedItem(command);
+                        break;
                     default:
                         Writer.DisplayError("Invalid command. Try again.\n");
                         break;

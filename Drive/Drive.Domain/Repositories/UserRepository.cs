@@ -30,18 +30,6 @@ namespace Drive.Domain.Repositories
             return SaveChanges();
         }
 
-        public ResponseResultType Delete(int userId)
-        {
-            var userToDelete = DbContext.Users.Find(userId);
-
-            if (userToDelete == null)
-                return ResponseResultType.NotFound;
-
-            DbContext.Users.Remove(userToDelete);
-
-            return SaveChanges();
-        }
-
         public User? GetById(int userId) => DbContext.Users.FirstOrDefault(u => u.UserId == userId);
         public User? GetByEmail(string email) => DbContext.Users.FirstOrDefault(u => u.Email == email);
 

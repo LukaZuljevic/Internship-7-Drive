@@ -1,4 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Repositories;
 
 namespace Drive.Presentation.Helpers
 {
@@ -95,10 +96,10 @@ namespace Drive.Presentation.Helpers
 
         public static void PrintFileEditCommands()
         {
-            DisplayInfo("\nAvailable commands:\n");
-            DisplayInfo(":save - Save and exit\n");
-            DisplayInfo(":cancel - Exit without saving\n");
-            DisplayInfo(":help - Display available commands\n");
+            Console.WriteLine(":save                - Save and exit");
+            Console.WriteLine(":cancel              - Exit without saving");
+            Console.WriteLine(":otvori komentare    - Open comments");
+            Console.WriteLine(":help                - Display available commands");
         }
 
         public static void PrintSharedContent(List<Item> items)
@@ -129,6 +130,29 @@ namespace Drive.Presentation.Helpers
             Console.WriteLine("\nhelp                                        - Display all commands");
             Console.WriteLine("uredi datoteku 'ime datoteke'               - Edit the specified file");
             Console.WriteLine("izbrisi 'ime mape/datoteke'                 - Delete the specified folder or file\n");
+        }
+
+        public static void PrintCommentCommands()
+        {
+            Console.WriteLine("\nhelp                                         - Display all commands");
+            Console.WriteLine("dodaj komentar                               - Add a new comment");
+            Console.WriteLine("uredi komentar                               - Edit a comment");
+            Console.WriteLine("izbriši komentar                             - Delete a comment\n");
+        }
+
+        public static void PrintComments(List<Comment> comments, UserRepository userRepository)
+        {
+            DisplayInfo("=========== Comments ===========");
+
+            foreach (var comment in comments)
+            {
+                var userEmail = userRepository.GetById(comment.UserId).Email;
+
+                Console.WriteLine($"{comment.CommentId} - {userEmail} - {comment.CreatedAt}");
+                Console.WriteLine($"{comment.Content}\n");
+            }
+
+            DisplayInfo("==============================\n");
         }
     }
 }

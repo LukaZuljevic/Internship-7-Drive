@@ -14,6 +14,8 @@ namespace Drive.Presentation.Actions
 
         private readonly UserRepository _userRepository;
 
+        private static CommentRepository _commentRepository = RepositoryFactory.Create<CommentRepository>();
+
         private static SharedItemRepository _sharedItemRepository = RepositoryFactory.Create<SharedItemRepository>();
 
         private static FolderRepository _folderRepository = RepositoryFactory.Create<FolderRepository>();
@@ -182,6 +184,10 @@ namespace Drive.Presentation.Actions
                         Reader.PressAnyKey();
                         break;
 
+                    case ":otvori komentare":
+                        var commentActions = new CommentActions(_commentRepository, file.ItemId, _user);
+                        commentActions.Open();
+                        break;
                     default:
                         if (string.IsNullOrEmpty(input))
                         {

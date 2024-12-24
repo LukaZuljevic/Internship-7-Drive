@@ -7,6 +7,13 @@
             Content = content;
         }
 
+        public Comment(string content, int userId, int itemId)
+        {
+            Content = content;
+            UserId = userId;
+            ItemId = itemId;
+        }
+
         public int CommentId { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

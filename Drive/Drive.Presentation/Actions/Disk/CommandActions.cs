@@ -29,6 +29,7 @@ namespace Drive.Presentation.Actions
             _userRepository = userRepository;
             _user = user;
         }
+  
         public void NavigateToFolder(string command)
         {
             var folderName = command.Substring("udi u mapu".Length).Trim();

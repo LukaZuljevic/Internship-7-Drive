@@ -66,5 +66,94 @@ namespace Drive.Presentation.Actions
                 Reader.PressAnyKey();
             }
         }
+
+        public void EditSharedFileContents(string command)
+        {
+            var fileName = command.Substring("uredi datoteku".Length).Trim();            
+            var sharedFile = _sharedItemRepository.GetByNameAndUserId(fileName, User.UserId);
+
+            if (sharedFile is null)
+            {    
+                Writer.DisplayError($"File {fileName} is not shared with you\n");
+                return;
+            }
+
+            var file = _fileRepository.GetById(sharedFile.ItemId);
+            
+            if (file == null)
+            {
+                Writer.DisplayError($"File {fileName} does not exist\n");
+                return;
+            }
+
+            Console.Clear();
+
+            var lines = string.IsNullOrEmpty(file.Content)
+                ? new List<string>()
+                : file.Content.Trim().Split('\n').Where(line => !string.IsNullOrEmpty(line)).ToList();
+
+            int activeLineIndex = lines.Count;
+
+            while (true)
+            {
+                Writer.PrintFileContents(lines);
+                Console.Write("> ");
+                var input = Console.ReadLine().Trim();
+
+                switch (input.ToLower())
+                {
+                    case ":save":
+                        var contents = string.Join("\n", lines);
+
+                        Files newFile = new Files(fileName, contents, file.ParentFolderId, file.DiskId);
+
+                        var result = _fileRepository.Update(newFile, file.ItemId);
+
+                        Writer.DisplayInfo("\nSaving...");
+                        Reader.PressAnyKey();
+
+                        DisplaySharedItems();
+                        return;
+
+                    case ":cancel":
+                        Writer.DisplayInfo("\nExiting without saving...");
+                        Reader.PressAnyKey();
+
+                        DisplaySharedItems();
+                        return;
+
+                    case ":help":
+                        Writer.PrintFileEditCommands();
+                        Reader.PressAnyKey();
+                        break;
+
+                    default:
+                        if (string.IsNullOrEmpty(input))
+                        {
+                            if (activeLineIndex > 0)
+                            {
+                                activeLineIndex--;
+                                lines.RemoveAt(activeLineIndex);
+                                Writer.PrintFileContents(lines);
+                            }
+                        }
+                        else
+                        {
+                            if (activeLineIndex < lines.Count)
+                            {
+                                lines[activeLineIndex] = input;
+                            }
+                            else
+                            {
+                                lines.Add(input);
+                            }
+
+                            activeLineIndex = lines.Count;
+                        }
+                        break;
+                }
+            }
+        }
+
     }
 }

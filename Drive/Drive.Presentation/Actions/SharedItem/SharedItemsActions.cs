@@ -41,6 +41,9 @@ namespace Drive.Presentation.Actions
                     case var _ when Reader.StartsWithCommand(command, "izbrisi"):
                         sharedItemCommandActions.DeleteSharedItem(command);
                         break;
+                    case var _ when Reader.StartsWithCommand(command, "uredi datoteku"):
+                        sharedItemCommandActions.EditSharedFileContents(command);
+                        break;
                     default:
                         Writer.DisplayError("Invalid command. Try again.\n");
                         break;

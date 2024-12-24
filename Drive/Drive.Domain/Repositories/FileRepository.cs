@@ -43,7 +43,6 @@ namespace Drive.Domain.Repositories
         }
 
         public Files? GetById(int fileId) => DbContext.Files.FirstOrDefault(f => f.ItemId == fileId);
-
         public Files? GetByName(string fileName, User user) => DbContext.Files.FirstOrDefault(f => f.Name == fileName && user.DiskId == f.DiskId);
     }
 }

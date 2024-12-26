@@ -10,29 +10,30 @@ namespace Drive.Presentation.Actions
     {
         private readonly SharedItemRepository _sharedItemRepository;
 
-        private readonly FolderRepository _folderRepository = RepositoryFactory.Create<FolderRepository>();
+        private readonly FileRepository _fileRepository;
 
-        private readonly FileRepository _fileRepository = RepositoryFactory.Create<FileRepository>();
+        private readonly ItemRepository _itemRepository;
 
-        private readonly ItemRepository _itemRepository = RepositoryFactory.Create<ItemRepository>();
+        private readonly CommentRepository _commentRepository;
 
-        private static CommentRepository _commentRepository = RepositoryFactory.Create<CommentRepository>();
+        private readonly UserRepository _userRepository;
 
-        User User { get; set; }
-
-        public SharedItemCommandActions(SharedItemRepository sharedItemRepository, User user)
-        {
+        private readonly User _user;
+        public SharedItemCommandActions(SharedItemRepository sharedItemRepository, FileRepository fileRepository, ItemRepository itemRepository, CommentRepository commentRepository, UserRepository userRepository, User user)
+        { 
             _sharedItemRepository = sharedItemRepository;
-            User = user;
+            _fileRepository = fileRepository;
+            _itemRepository = itemRepository;
+            _commentRepository = commentRepository;
+            _userRepository = userRepository;
+            _user = user;
         }
-
         public void DisplaySharedItems()
         {
-            var sharedItems = _sharedItemRepository.GetByUserId(User.UserId);
+            var sharedItems = _sharedItemRepository.GetByUserId(_user.UserId);
 
             List<Item> items = new List<Item>();
 
-            //stavi u funkciju
             foreach (var sharedItem in sharedItems)
             {
                 var item = _itemRepository.GetByItemId(sharedItem.ItemId);
@@ -48,7 +49,7 @@ namespace Drive.Presentation.Actions
         {
             var itemName = command.Substring("izbrisi".Length).Trim();
 
-            var sharedItem = _sharedItemRepository.GetByNameAndUserId(itemName, User.UserId);
+            var sharedItem = _sharedItemRepository.GetByNameAndUserId(itemName, _user.UserId);
 
             if (sharedItem is null)
             {
@@ -72,7 +73,7 @@ namespace Drive.Presentation.Actions
         public void EditSharedFileContents(string command)
         {
             var fileName = command.Substring("uredi datoteku".Length).Trim();            
-            var sharedFile = _sharedItemRepository.GetByNameAndUserId(fileName, User.UserId);
+            var sharedFile = _sharedItemRepository.GetByNameAndUserId(fileName, _user.UserId);
 
             if (sharedFile is null)
             {    
@@ -129,7 +130,7 @@ namespace Drive.Presentation.Actions
                         Reader.PressAnyKey();
                         break;
                     case ":otvori komentare":
-                        var commentActions = new CommentActions(_commentRepository, file.ItemId, User);
+                        var commentActions = new CommentActions(_userRepository, _commentRepository, file.ItemId, _user);
                         commentActions.Open();
                         break;
                     default:

@@ -83,9 +83,9 @@ namespace Drive.Presentation.Helpers
             return password.Length >= 5 && password.Length <= 20;
         }
 
-        public static string ConfirmPassword()
+        public static string ConfirmPassword(string message)
         {
-            var password = TryReadPassword("Enter your password");
+            var password = TryReadPassword(message);
 
             while (true)
             {
@@ -137,6 +137,29 @@ namespace Drive.Presentation.Helpers
             }
 
             return false;
+        }
+
+        public static void TryReadCommand(Dictionary<Func<string, bool>, Action<string>> commandDictionary)
+        {
+            while (true)
+            {
+                TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
+                command = command.Trim();
+
+                if (IsCommand(command, "exit"))
+                    break;
+
+                var matchedCommand = commandDictionary.Keys.FirstOrDefault(predicate => predicate(command));
+
+                if (matchedCommand != null)
+                {
+                    commandDictionary[matchedCommand](command);
+                }
+                else
+                {
+                    Writer.DisplayError("Invalid command. Try again.\n");
+                }
+            }
         }
     }
 }

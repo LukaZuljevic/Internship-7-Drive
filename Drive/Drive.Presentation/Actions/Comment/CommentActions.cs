@@ -7,11 +7,16 @@ namespace Drive.Presentation.Actions
 {
     public class CommentActions
     {
+        private readonly User _user;
+
+        private readonly UserRepository _userRepository;
+
         private readonly CommentRepository _commentRepository;
+
         private readonly int _itemId;
-        User _user;
-        public CommentActions(CommentRepository commentRepository, int itemId, User user)
+        public CommentActions(UserRepository userRepository,CommentRepository commentRepository, int itemId, User user)
         {
+            _userRepository = userRepository;
             _commentRepository = commentRepository;
             _itemId = itemId;
             _user = user;
@@ -19,36 +24,18 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
- 
-            var commentCommandActions = new CommentCommandActions(_commentRepository, _itemId, _user);
+            var commentCommandActions = new CommentCommandActions(_userRepository, _commentRepository, _itemId, _user);
             commentCommandActions.OpenComments();
 
-            while (true)
+            var commandDictionary = new Dictionary<Func<string, bool>, Action<string>>
             {
-                Reader.TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
-                command = command.Trim();
+                { command => Reader.IsCommand(command, "help"), _=> Writer.PrintCommentCommands() },
+                { command => Reader.IsCommand(command, "dodaj komentar"), _ => commentCommandActions.AddComment() },
+                { command => Reader.IsCommand(command, "uredi komentar"), _=> commentCommandActions.EditComment() },
+                { command => Reader.IsCommand(command, "izbrisi komentar"), _=> commentCommandActions.DeleteComment() }
+            };
 
-                switch (command)
-                {
-                    case var _ when Reader.IsCommand(command, "help"):
-                        Writer.PrintCommentCommands();
-                        break;
-                    case var _ when Reader.IsCommand(command, "dodaj komentar"):
-                        commentCommandActions.AddComment();
-                        break;
-                    case var _ when Reader.IsCommand(command, "uredi komentar"):
-                        commentCommandActions.EditComment();
-                        break;
-                    case var _ when Reader.IsCommand(command, "izbrisi komentar"):
-                        commentCommandActions.DeleteComment();
-                        break;
-                    default:
-                        Writer.DisplayError("Invalid command. Try again.\n");
-                        break;
-                }
-                if (Reader.IsCommand(command, "exit"))
-                    break;
-            }
+            Reader.TryReadCommand(commandDictionary);
         }
     }
 }

@@ -9,19 +9,16 @@ namespace Drive.Presentation.Actions
 {
     public class ChangeProfileSettingsActions : IAction
     {
-        private readonly UserRepository _userRepository;
+        private readonly User _user;
         public string ActionName { get; set; } = "Profile settings";
-        public User User { get; set; }
-
-        public ChangeProfileSettingsActions(UserRepository userRepository, User user)
+        public ChangeProfileSettingsActions(User user)
         {
-            _userRepository = userRepository;
-            User = user;
+            _user = user;
         }
 
         public void Open()
         {
-            var settingsActions = ProfileSettingsMenuFactory.CreateActions(User);
+            var settingsActions = ProfileSettingsMenuFactory.CreateActions(_user);
 
             Console.Clear();
             settingsActions.PrintActions("========== Profile Settings ==========\n");

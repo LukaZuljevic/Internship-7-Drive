@@ -1,5 +1,6 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Repositories;
+using Drive.Presentation.Actions;
 
 namespace Drive.Presentation.Helpers
 {
@@ -79,12 +80,12 @@ namespace Drive.Presentation.Helpers
                 Console.WriteLine("> " + line);
         }
 
-        public static void PrintCurrentFolderContent(Folder? currentFolder, List<Folder> folders, List<Files> files)
+        public static void PrintCurrentFolderContent(CurrentFolder? currentFolder, List<Folder> folders, List<Files> files)
         {
             Console.Clear();
             DisplayInfo("========== My Disk ==========");
 
-            var location = currentFolder?.Name ?? "Root";
+            var location = currentFolder?.Folder?.Name ?? "Root";
             PrintLocation(location);
 
             PrintFolders(folders);
@@ -146,7 +147,7 @@ namespace Drive.Presentation.Helpers
 
             foreach (var comment in comments)
             {
-                var userEmail = userRepository.GetById(comment.UserId).Email;
+                var userEmail = userRepository.GetById(comment.UserId)?.Email;
 
                 Console.WriteLine($"{comment.CommentId} - {userEmail} - {comment.CreatedAt}");
                 Console.WriteLine($"{comment.Content}\n");

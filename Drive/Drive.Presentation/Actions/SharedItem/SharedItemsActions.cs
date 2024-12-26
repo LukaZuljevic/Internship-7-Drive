@@ -9,49 +9,41 @@ namespace Drive.Presentation.Actions
 {
     public class SharedItemsActions : IAction
     {
-        private static SharedItemRepository _sharedItemRepository;
-        User User { get; set; }
+        private readonly SharedItemRepository _sharedItemRepository;
 
+        private readonly FileRepository _fileRepository = RepositoryFactory.Create<FileRepository>();
+
+        private readonly ItemRepository _itemRepository = RepositoryFactory.Create<ItemRepository>();
+
+        private readonly CommentRepository _commentRepository = RepositoryFactory.Create<CommentRepository>();
+
+        private readonly UserRepository _userRepository = RepositoryFactory.Create<UserRepository>();
+
+        private readonly User _user;
         public string ActionName { get; set; } = "Shared With Me";
         public SharedItemsActions(SharedItemRepository sharedItemRepository, User user)
         {
             _sharedItemRepository = sharedItemRepository;
-            User = user;
+            _user = user;
         }
 
         public void Open()
         {
-
             Console.Clear();
 
-            var sharedItemCommandActions = new SharedItemCommandActions(_sharedItemRepository, User);
+            //dodaj ulazne parametre
+            var sharedItemCommandActions = new SharedItemCommandActions(_sharedItemRepository, _fileRepository, _itemRepository, _commentRepository, _userRepository, _user);
             sharedItemCommandActions.DisplaySharedItems();
 
-            while (true)
+            var commandDictionary = new Dictionary<Func<string, bool>, Action<string>>
             {
+                  { command => Reader.IsCommand(command, "help"), _ => Writer.PrintReducedCommands() },
+                  { command => Reader.StartsWithCommand(command, "izbrisi"), sharedItemCommandActions.DeleteSharedItem },
+                  { command => Reader.StartsWithCommand(command, "uredi datoteku"), sharedItemCommandActions.EditSharedFileContents }
+            };
 
-                Reader.TryReadInput("Enter a command ('help' to see all commands, 'exit' to quit navigation)", out var command);
-                command = command.Trim();
-
-                switch (true)
-                {
-                    case var _ when Reader.IsCommand(command, "help"):
-                        Writer.PrintReducedCommands();
-                        break;
-                    case var _ when Reader.StartsWithCommand(command, "izbrisi"):
-                        sharedItemCommandActions.DeleteSharedItem(command);
-                        break;
-                    case var _ when Reader.StartsWithCommand(command, "uredi datoteku"):
-                        sharedItemCommandActions.EditSharedFileContents(command);
-                        break;
-                    default:
-                        Writer.DisplayError("Invalid command. Try again.\n");
-                        break;
-                }
-
-                if (Reader.IsCommand(command, "exit"))
-                    break;
-            }       
+            Reader.TryReadCommand(commandDictionary);
         }
+
     }
 }

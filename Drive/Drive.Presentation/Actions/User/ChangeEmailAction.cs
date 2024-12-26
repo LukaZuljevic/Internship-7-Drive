@@ -9,34 +9,31 @@ namespace Drive.Presentation.Actions
     public class ChangeEmailAction : IAction
     {
         private readonly UserRepository _userRepository;
+        private readonly User _user;
         public string ActionName { get; set; } = "Change Email";
-        public User User { get; set; }
-
         public ChangeEmailAction(UserRepository userRepository, User user)
         {
             _userRepository = userRepository;
-            User = user;
+            _user = user;
         }
 
         public void Open()
         {
-            var email = string.Empty;
+            string email;
             do
             {
                 email = Reader.TryReadEmail("Enter your new email address");
             }
             while (Reader.IsEmailAlreadyInUse(email, _userRepository));
 
-            User.Email = email;
-            var result = _userRepository.Update(User, User.UserId);
+            _user.Email = email;
+            var result = _userRepository.Update(_user, _user.UserId);
 
             Writer.DisplayInfo(result == ResponseResultType.Success
                  ? "\nEmail updated successfully!"
                  : "\nFailed to update email. Please try again.");
 
             Reader.PressAnyKey();
-
-            Console.Clear();
         }
     }
 }

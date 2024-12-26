@@ -9,29 +9,26 @@ namespace Drive.Presentation.Actions
     public class ChangePasswordAction : IAction
     {
         private readonly UserRepository _userRepository;
+        private readonly User _user;
         public string ActionName { get; set; } = "Change Password";
-        public User User { get; set; }
-
         public ChangePasswordAction(UserRepository userRepository, User user)
         {
             _userRepository = userRepository;
-            User = user;
+            _user = user;
         }
 
         public void Open()
         {
-            var password = Reader.ConfirmPassword();
+            var password = Reader.ConfirmPassword("Enter your new password");
 
-            User.Password = password;
-            var result = _userRepository.Update(User, User.UserId);
+            _user.Password = password;
+            var result = _userRepository.Update(_user, _user.UserId);
 
             Writer.DisplayInfo(result == ResponseResultType.Success
                   ? "\nPassword updated successfully!"
                   : "\nFailed to update Password. Please try again.");
 
             Reader.PressAnyKey();
-
-            Console.Clear();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Drive.Presentation.Actions.Authentications
             }
             while (Reader.IsEmailAlreadyInUse(email, _userRepository));
 
-            var password = Reader.ConfirmPassword();
+            var password = Reader.ConfirmPassword("Enter your password");
             var captchaConfirmation = Reader.ConfirmCaptcha();
 
             var newUser = new User(email, password);

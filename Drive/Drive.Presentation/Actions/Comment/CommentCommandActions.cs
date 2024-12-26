@@ -8,13 +8,16 @@ namespace Drive.Presentation.Actions
 {
     public class CommentCommandActions
     {
-        private static UserRepository userRepository = RepositoryFactory.Create<UserRepository>();
-        private static CommentRepository _commentRepository;
-        private static int _itemId;
-        User _user;
+        private readonly UserRepository _userRepository;
 
-        public CommentCommandActions(CommentRepository commentRepository, int itemId, User user)
+        private readonly CommentRepository _commentRepository;
+
+        private static int _itemId;
+
+        private readonly User _user;
+        public CommentCommandActions(UserRepository userRepository , CommentRepository commentRepository, int itemId, User user)
         {
+            _userRepository = userRepository;
             _commentRepository = commentRepository;
             _itemId = itemId;
             _user = user;
@@ -32,18 +35,16 @@ namespace Drive.Presentation.Actions
                 return;
             }
 
-            Writer.PrintComments(comments, userRepository);
+            Writer.PrintComments(comments, _userRepository);
         }
 
         public void AddComment()
         {
-            Console.Write("Enter your comment: ");
-            string content = Console.ReadLine();
+            Reader.TryReadInput("Enter a new comment: ", out var content);
 
             var comment = new Comment(content, _user.UserId, _itemId);
 
             var result = _commentRepository.Add(comment);
-
             if (result != ResponseResultType.Success)
             {
                 Writer.DisplayError("Failed to add comment.\n");
@@ -55,19 +56,19 @@ namespace Drive.Presentation.Actions
 
         public void EditComment()
         {
-            Console.Write("Enter the ID of the comment to edit: ");
+            Console.Write("Enter an ID of the comment to edit: ");
             if (int.TryParse(Console.ReadLine(), out int commentId))
             {
                 var existingComment = _commentRepository.GetByIdAndItemId(commentId, _itemId);
 
                 if (existingComment is null)
                 {
-                    Writer.DisplayError($"Comment with id {commentId} not found.\n");
+                    Writer.DisplayError($"Comment with ID {commentId} not found.\n");
                     return;
                 }
 
-                Console.Write("Enter new content: ");
-                existingComment.Content = Console.ReadLine();
+                Reader.TryReadInput("Enter new content: ", out var newContent);
+                existingComment.Content = newContent;
 
                 var result = _commentRepository.Update(existingComment, commentId);
 
@@ -94,7 +95,7 @@ namespace Drive.Presentation.Actions
 
                 if (commentToDelete is null)
                 {
-                    Writer.DisplayError($"Comment with id {commentId} not found.\n");
+                    Writer.DisplayError($"Comment with ID {commentId} not found.\n");
                     return;
                 }
 

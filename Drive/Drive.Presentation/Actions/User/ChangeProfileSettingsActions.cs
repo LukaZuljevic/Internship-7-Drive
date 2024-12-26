@@ -21,11 +21,10 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
-            Console.Clear();
-
             var settingsActions = ProfileSettingsMenuFactory.CreateActions(User);
-            settingsActions.PrintActions("========== Profile Settings ==========\n");
 
+            Console.Clear();
+            settingsActions.PrintActions("========== Profile Settings ==========\n");
         }       
     }
 }

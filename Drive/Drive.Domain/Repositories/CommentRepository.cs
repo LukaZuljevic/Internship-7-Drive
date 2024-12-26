@@ -39,9 +39,6 @@ namespace Drive.Domain.Repositories
 
             return SaveChanges();
         }
-
-        public Comment? GetById(int commentId) => DbContext.Comments.FirstOrDefault(c => c.CommentId == commentId);
-
         public List<Comment> GetAll(int itemId) => DbContext.Comments.Where(c => c.ItemId == itemId).ToList();
 
         public Comment? GetByIdAndItemId(int commentId, int itemId) => DbContext.Comments.FirstOrDefault(c => c.CommentId == commentId && c.ItemId == itemId);

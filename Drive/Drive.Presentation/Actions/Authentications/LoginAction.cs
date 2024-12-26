@@ -32,6 +32,8 @@ namespace Drive.Presentation.Actions.Authentications
                 if (user != null && user.Password == password)
                 {
                     var userActions = MainMenuFactory.CreateActions(user);
+
+                    Console.Clear();
                     userActions.PrintActions("========== Main Menu ==========\n");
                     return; 
                 }

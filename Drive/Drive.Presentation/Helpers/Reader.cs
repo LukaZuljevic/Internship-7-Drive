@@ -1,6 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Repositories;
-using Drive.Presentation.Actions;
 
 namespace Drive.Presentation.Helpers
 {
@@ -81,7 +80,7 @@ namespace Drive.Presentation.Helpers
 
         public static bool IsValidPassword(string password)
         {
-            return password.Length >= 5;
+            return password.Length >= 5 && password.Length <= 20;
         }
 
         public static string ConfirmPassword()
@@ -110,7 +109,7 @@ namespace Drive.Presentation.Helpers
 
             while (true)
             {
-                Reader.TryReadInput($"Enter the captcha ({expectedCaptcha})", out string input);
+                TryReadInput($"Enter the captcha ({expectedCaptcha})", out string input);
 
                 if (input == expectedCaptcha)
                     return true;

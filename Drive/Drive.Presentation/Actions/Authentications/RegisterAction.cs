@@ -11,7 +11,7 @@ namespace Drive.Presentation.Actions.Authentications
     public class RegisterAction : IAction
     {
         private readonly UserRepository _userRepository;
-        private static DiskRepository _diskRepository = RepositoryFactory.Create<DiskRepository>();
+        private readonly static DiskRepository _diskRepository = RepositoryFactory.Create<DiskRepository>();
         public string ActionName { get; set; } = "Register";
 
         public RegisterAction(UserRepository userRepository)
@@ -24,7 +24,7 @@ namespace Drive.Presentation.Actions.Authentications
             Console.Clear();
             Writer.DisplayInfo("========== Registration ==========\n");
 
-            var email = string.Empty;
+            string email;
             do
             {
                 email = Reader.TryReadEmail("Enter your email address");
@@ -41,29 +41,39 @@ namespace Drive.Presentation.Actions.Authentications
             {
                 Writer.DisplayError("Registration failed. Please try again.\n");
                 Reader.PressAnyKey();
+                return;
             }
 
             User user = _userRepository.GetByEmail(email);
 
-            Reader.TryReadInput("Enter disk name", out string name);
+            Reader.TryReadInput("Enter disk name", out string diskName);
 
-            var newDisk = new Disk(name, user.UserId);
+            var disk = CreateAndAssignDisk(diskName, user);
+            if (disk is null)
+            {
+                Writer.DisplayError("Registration failed due to a disk creation error.");
+                return;
+            }
 
-            result = _diskRepository.Add(newDisk);
-            if (result != ResponseResultType.Success)
-                Writer.DisplayError("Error creating disk");
-
-            Disk disk = _diskRepository.GetById(user.UserId);
-
-            user.DiskId = disk.UserId;
-            _userRepository.Update(user,user.UserId);
+            user.DiskId = disk.DiskId;
+            _userRepository.Update(user, user.UserId);
 
             Writer.DisplaySuccess("\nRegistration successful!");
             Reader.PressAnyKey();
+        }
 
-            var loginAction = new LoginAction(_userRepository);
-            loginAction.Open();
+        private Disk CreateAndAssignDisk(string name, User user)
+        {
+            var newDisk = new Disk(name, user.UserId);
+            var diskCreationResult = _diskRepository.Add(newDisk);
 
+            if (diskCreationResult != ResponseResultType.Success)
+            {
+                Writer.DisplayError($"Error creating disk: {diskCreationResult}");
+                return null;
+            }
+
+            return _diskRepository.GetById(user.UserId);
         }
     }
 }

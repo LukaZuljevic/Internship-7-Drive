@@ -10,6 +10,8 @@ public class Program
         Reader.PressAnyKey();
 
         var authenticationActions = AuthenticationFactory.CreateActions();
+
+        Console.Clear();
         authenticationActions.PrintActions("========== DUMP Drive Login ==========\n");
     }
 }

@@ -1,23 +1,16 @@
 ﻿using Drive.Presentation.Abstractions;
-using Drive.Presentation.Actions;
 using Drive.Presentation.Helpers;
 
 namespace Drive.Presentation.Extensions
 {
     public static class ActionExtensions
     {
-        public static void PrintActions(this IList<IAction> actions, string header = "")
+        public static void PrintActions(this IList<IAction> actions, string header)
         {
-            if (!string.IsNullOrWhiteSpace(header))
-            {
-                Console.Clear();
-                Writer.DisplayInfo(header);
-            }
-
+            Writer.DisplayInfo(header);
+            
             for (int i = 0; i < actions.Count; i++)
-            {
                 Console.WriteLine($"{i + 1}. {actions[i].ActionName}");
-            }
 
             HandleUserSelection(actions, header);
         }
@@ -46,6 +39,7 @@ namespace Drive.Presentation.Extensions
                     }
 
                     selectedAction.Open();
+
                     Console.Clear();
                     PrintActions(actions, header);
                     return;

@@ -35,6 +35,7 @@ namespace Drive.Presentation.Helpers
             foreach (var folder in sortedFolders)
                 Console.WriteLine(folder.Name + "/");
         }
+
         public static void PrintFiles(List<Files> files)
         {
             var sortedFiles = files.OrderByDescending(f => f.LastChangedAt ?? f.CreatedAt).ToList();
@@ -76,7 +77,6 @@ namespace Drive.Presentation.Helpers
 
             foreach (var line in lines)
                 Console.WriteLine("> " + line);
-
         }
 
         public static void PrintCurrentFolderContent(Folder? currentFolder, List<Folder> folders, List<Files> files)

@@ -31,15 +31,17 @@ namespace Drive.Presentation.Actions
         {
             Console.Clear();
 
-            //dodaj ulazne parametre
+            var commandHelper = new DiskActionHelper(_itemRepository, _sharedItemRepository, _user);
             var sharedItemCommandActions = new SharedItemCommandActions(_sharedItemRepository, _fileRepository, _itemRepository, _commentRepository, _userRepository, _user);
-            sharedItemCommandActions.DisplaySharedItems();
+            var itemActions = new DiskItemActions(commandHelper, _fileRepository, _userRepository, _commentRepository);
+
+            commandHelper.DisplaySharedItems();
 
             var commandDictionary = new Dictionary<Func<string, bool>, Action<string>>
             {
                   { command => Reader.IsCommand(command, "help"), _ => Writer.PrintReducedCommands() },
                   { command => Reader.StartsWithCommand(command, "izbrisi"), sharedItemCommandActions.DeleteSharedItem },
-                  { command => Reader.StartsWithCommand(command, "uredi datoteku"), sharedItemCommandActions.EditSharedFileContents }
+                  { command => Reader.StartsWithCommand(command, "uredi datoteku"), command => itemActions.EditFileContents(command, true) }
             };
 
             Reader.TryReadCommand(commandDictionary);

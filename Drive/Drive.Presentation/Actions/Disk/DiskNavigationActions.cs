@@ -1,12 +1,11 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Presentation.Helpers;
-using Drive.Presentation.Actions;
 
 namespace Drive.Presentation.Actions
 {
     public class DiskNavigationActions
     {
-        private CurrentFolder? _currentFolder;
+        private readonly CurrentFolder? _currentFolder;
 
         private readonly Stack<Folder?> _folderHistory;
 
@@ -47,7 +46,7 @@ namespace Drive.Presentation.Actions
             }
         }
 
-        public bool TryNavigateToFolder(string folderName)
+        private bool TryNavigateToFolder(string folderName)
         {
             var folders = _commandHelper.GetFoldersInCurrentLocation();
 

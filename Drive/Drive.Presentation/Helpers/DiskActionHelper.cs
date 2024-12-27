@@ -1,4 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Actions;
 
@@ -10,12 +11,22 @@ namespace Drive.Presentation.Helpers
         private readonly User _user;
         private readonly UserRepository _userRepository;
         private readonly CurrentFolder? _currentFolder;
+        private readonly SharedItemRepository _sharedItemRepository = RepositoryFactory.Create<SharedItemRepository>();
+        private readonly ItemRepository _itemRepository = RepositoryFactory.Create<ItemRepository>();
+        private readonly FileRepository _filesRepository = RepositoryFactory.Create<FileRepository>();
 
         public DiskActionHelper(User user, UserRepository userRepository, CurrentFolder? currentFolder)
         {
             _user = user;
             _userRepository = userRepository;
             _currentFolder = currentFolder;
+        }
+
+        public DiskActionHelper(ItemRepository itemRepository, SharedItemRepository sharedItemRepository, User user)
+        {
+            _sharedItemRepository = sharedItemRepository;
+            _itemRepository = itemRepository;
+            _user = user;
         }
         public List<Folder> GetFoldersInCurrentLocation()
         {
@@ -34,7 +45,7 @@ namespace Drive.Presentation.Helpers
         public Folder CreateFolder(string folderName)
         {
             return _currentFolder.Folder == null
-            ? new Folder(folderName, null, _user.DiskId)
+                ? new Folder(folderName, null, _user.DiskId)
                 : new Folder(folderName, _currentFolder.Folder.ItemId, _user.DiskId);
         }
 
@@ -46,7 +57,7 @@ namespace Drive.Presentation.Helpers
         }
 
         public bool IsNameDuplicate(string name)
-        {
+        {  
             var folders = GetFoldersInCurrentLocation();
             var files = GetFilesInCurrentLocation();
 
@@ -59,6 +70,37 @@ namespace Drive.Presentation.Helpers
             var files = GetFilesInCurrentLocation();
 
             Writer.PrintCurrentFolderContent(_currentFolder, folders, files);
+        }
+
+        public void DisplaySharedItems()
+        {
+            var sharedItems = _sharedItemRepository.GetByUserId(_user.UserId);
+
+            List<Item> items = new List<Item>();
+
+            foreach (var sharedItem in sharedItems)
+            {
+                var item = _itemRepository.GetByItemId(sharedItem.ItemId);
+
+                if (item is not null)
+                    items.Add(item);
+            }
+
+            Writer.PrintSharedContent(items);
+        }
+
+        public Files? GetFile(string fileName, bool isShared)
+        {
+            if (isShared)
+            {
+                var sharedFile = _sharedItemRepository.GetByNameAndUserId(fileName, _user.UserId);
+                if (sharedFile == null)
+                    return null;
+
+                return _filesRepository.GetById(sharedFile.ItemId);
+            }
+
+            return _filesRepository.GetByName(fileName, _user);
         }
     }
 }

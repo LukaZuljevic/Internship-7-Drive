@@ -34,7 +34,7 @@ namespace Drive.Presentation.Helpers
             DisplayInfo("Folders:");
 
             foreach (var folder in sortedFolders)
-                Console.WriteLine(folder.Name + "/");
+                Console.WriteLine($"{folder.Name}/");
         }
 
         public static void PrintFiles(List<Files> files)
@@ -59,7 +59,8 @@ namespace Drive.Presentation.Helpers
 
         public static void PrintCommands()
         {
-            Console.WriteLine("\nhelp                                        - Display all commands");
+            Console.WriteLine("\nclear                                      - Clear terminal");
+            Console.WriteLine("help                                        - Display all commands");
             Console.WriteLine("stvori mapu 'ime mape'                      - Create a folder with the specified name");
             Console.WriteLine("stvori datoteku 'ime datoteke'              - Create a file with the specified name");
             Console.WriteLine("uđi u mapu 'ime mape'                       - Navigate into the specified folder");

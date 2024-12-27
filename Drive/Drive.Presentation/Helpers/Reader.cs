@@ -130,9 +130,9 @@ namespace Drive.Presentation.Helpers
 
         public static bool CheckIfNameAlreadyExists(string name, List<Folder> folders, List<Files> files)
         {
-            if (folders.Any(f => f.Name == name) || files.Any(f => f.Name == name))
+            if (folders.Any(i => i.Name == name) || files.Any(i => i.Name == name))
             {
-                Writer.DisplayError($"Name {name} already exists in this location\n");
+                Writer.DisplayError($"Name {name} already exists\n");
                 return true;
             }
 
@@ -160,6 +160,35 @@ namespace Drive.Presentation.Helpers
                     Writer.DisplayError("Invalid command. Try again.\n");
                 }
             }
+        }
+
+        public static (string?, string?) ParseShareCommand(string command, int expectedParts, int firstPart, int secondPart)
+        {
+            var commandParts = command.Split(" ");
+            if (!CheckShareCommand(commandParts.Length, expectedParts)) return (null, null);
+
+            return (commandParts[firstPart], commandParts[secondPart]);
+        }
+
+        public static bool CheckShareCommand( int commandPartsLength, int length)
+        {
+            if (commandPartsLength < length)
+            {
+                Writer.DisplayError("Invalid command. Try again.\n");
+                return false;
+            }
+            return true;    
+        }
+
+        public static bool IsAlreadyShared(string itemName, int userId, SharedItemRepository sharedItemRepository)
+        {
+            var sharedItem = sharedItemRepository.GetByNameAndUserId(itemName, userId);
+            if (sharedItem != null)
+            {
+                Writer.DisplayError($"Item {itemName} is already being shared\n");
+                return true;
+            }
+            return false;
         }
     }
 }

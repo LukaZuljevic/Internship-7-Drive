@@ -34,22 +34,21 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
-            Console.Clear();
             var commandHelper = new DiskActionHelper(_user, _userRepository, _currentFolder);
-
             var navigationActions = new DiskNavigationActions(_currentFolder, _folderHistory, commandHelper);
-            var sharingActions = new DiskSharingActions(_userRepository, _user, commandHelper);
-            var itemActions = new DiskItemActions(_commentRepository, _folderRepository, _filesRepository, _userRepository, _user, commandHelper);
+            var sharingActions = new DiskSharingActions(_userRepository, _user, _folderRepository, _filesRepository);
+            var itemActions = new DiskItemActions(_currentFolder, _commentRepository, _folderRepository, _filesRepository, _userRepository, _user, commandHelper);
 
             commandHelper.DisplayFolderContents();
 
             var commandDictionary = new Dictionary<Func<string, bool>, Action<string>>
             {
+                { command => Reader.IsCommand(command, "clear"), _ => commandHelper.DisplayFolderContents() },
                 { command => Reader.IsCommand(command, "help"), _ => Writer.PrintCommands() },
                 { command => Reader.StartsWithCommand(command, "stvori mapu"), itemActions.CreateFolderInCurrentLocation },
                 { command => Reader.StartsWithCommand(command, "stvori datoteku"), itemActions.CreateFileInCurrentLocation},
                 { command => Reader.StartsWithCommand(command, "udi u mapu"), navigationActions.NavigateToFolder },
-                { command => Reader.StartsWithCommand(command, "uredi datoteku"), itemActions.EditFileContents },
+                { command => Reader.StartsWithCommand(command, "uredi datoteku"), command => itemActions.EditFileContents(command, false) },
                 { command => Reader.StartsWithCommand(command, "izbrisi"), itemActions.DeleteItem },
                 { command => Reader.StartsWithCommand(command, "promjeni naziv"), itemActions.ChangeItemName },
                 { command => Reader.StartsWithCommand(command, "podijeli"), sharingActions.ShareItem },

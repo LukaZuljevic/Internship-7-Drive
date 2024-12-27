@@ -19,6 +19,7 @@ namespace Drive.Presentation.Actions
         private readonly UserRepository _userRepository;
 
         private readonly User _user;
+
         public SharedItemCommandActions(SharedItemRepository sharedItemRepository, FileRepository fileRepository, ItemRepository itemRepository, CommentRepository commentRepository, UserRepository userRepository, User user)
         { 
             _sharedItemRepository = sharedItemRepository;
@@ -44,7 +45,6 @@ namespace Drive.Presentation.Actions
 
             Writer.PrintSharedContent(items);
         }
-
         public void DeleteSharedItem(string command)
         {
             var itemName = command.Substring("izbrisi".Length).Trim();
@@ -59,107 +59,14 @@ namespace Drive.Presentation.Actions
 
             var result = _sharedItemRepository.Delete(sharedItem.SharedItemId);
 
-            if (result == ResponseResultType.Success)
-            {
-                DisplaySharedItems();
-            }
-            else
+            if (result != ResponseResultType.Success)
             {
                 Writer.DisplayError("Failed to delete an item.\n");
                 Reader.PressAnyKey();
-            }
-        }
-
-        public void EditSharedFileContents(string command)
-        {
-            var fileName = command.Substring("uredi datoteku".Length).Trim();            
-            var sharedFile = _sharedItemRepository.GetByNameAndUserId(fileName, _user.UserId);
-
-            if (sharedFile is null)
-            {    
-                Writer.DisplayError($"File {fileName} is not shared with you\n");
                 return;
             }
 
-            var file = _fileRepository.GetById(sharedFile.ItemId);
-            
-            if (file == null)
-            {
-                Writer.DisplayError($"File {fileName} does not exist\n");
-                return;
-            }
-
-            Console.Clear();
-
-            var lines = string.IsNullOrEmpty(file.Content)
-                ? new List<string>()
-                : file.Content.Trim().Split('\n').Where(line => !string.IsNullOrEmpty(line)).ToList();
-
-            int activeLineIndex = lines.Count;
-
-            while (true)
-            {
-                Writer.PrintFileContents(lines);
-                Console.Write("> ");
-                var input = Console.ReadLine().Trim();
-
-                switch (input.ToLower())
-                {
-                    case ":save":
-                        var contents = string.Join("\n", lines);
-
-                        Files newFile = new Files(fileName, contents, file.ParentFolderId, file.DiskId);
-
-                        var result = _fileRepository.Update(newFile, file.ItemId);
-
-                        Writer.DisplayInfo("\nSaving...");
-                        Reader.PressAnyKey();
-
-                        DisplaySharedItems();
-                        return;
-
-                    case ":cancel":
-                        Writer.DisplayInfo("\nExiting without saving...");
-                        Reader.PressAnyKey();
-
-                        DisplaySharedItems();
-                        return;
-
-                    case ":help":
-                        Writer.PrintFileEditCommands();
-                        Reader.PressAnyKey();
-                        break;
-                    case ":otvori komentare":
-                        var commentActions = new CommentActions(_userRepository, _commentRepository, file.ItemId, _user);
-                        commentActions.Open();
-                        break;
-                    default:
-                        if (string.IsNullOrEmpty(input))
-                        {
-                            if (activeLineIndex > 0)
-                            {
-                                activeLineIndex--;
-                                lines.RemoveAt(activeLineIndex);
-                                Writer.PrintFileContents(lines);
-                            }
-                        }
-                        else
-                        {
-                            if (activeLineIndex < lines.Count)
-                            {
-                                lines[activeLineIndex] = input;
-                            }
-                            else
-                            {
-                                lines.Add(input);
-                            }
-
-                            activeLineIndex = lines.Count;
-                        }
-                        break;
-                }
-            }
+            DisplaySharedItems();
         }
-
     }
 }

@@ -18,7 +18,7 @@ namespace Drive.Presentation.Actions
 
         private readonly DiskActionHelper _commandHelper;
 
-        private readonly User _user;
+        private readonly User _user;//makni
 
         public DiskSharingActions(UserRepository userRepository, User user, FolderRepository folderRepository, FileRepository fileRepository, DiskActionHelper commandHelper)
         {
@@ -50,6 +50,11 @@ namespace Drive.Presentation.Actions
             if (Reader.IsAlreadyShared(itemName, userToReceiveItem.UserId, _sharedItemRepository)) return;
 
             ShareSelectedItem(selectedItem, userToReceiveItem, itemName, userEmail);
+
+            if (selectedItem is Folder folder)
+            {
+                ShareFolderContents(folder, userToReceiveItem);
+            }
         }
 
         private Item? GetItemByName(string itemName)
@@ -61,7 +66,7 @@ namespace Drive.Presentation.Actions
             {
                 return itemFile;
             }
-            else if(itemFolder is not null)
+            else if (itemFolder is not null)
             {
                 return itemFolder;
             }
@@ -84,6 +89,22 @@ namespace Drive.Presentation.Actions
             else
             {
                 Writer.DisplayError($"Failed to share item {itemName} with user {userEmail}\n");
+            }
+        }
+
+        private void ShareFolderContents(Folder folder, User userToReceiveItem)
+        {
+            foreach (var subFolder in folder.Items.OfType<Folder>())
+            {
+                var sharedSubFolder = new SharedItem(subFolder.ItemId, userToReceiveItem.UserId, subFolder.Name);
+                _sharedItemRepository.Add(sharedSubFolder);
+                ShareFolderContents(subFolder, userToReceiveItem);
+            }
+
+            foreach (var file in folder.Items.OfType<Files>())
+            {
+                var sharedFile = new SharedItem(file.ItemId, userToReceiveItem.UserId, file.Name);
+                _sharedItemRepository.Add(sharedFile);
             }
         }
 

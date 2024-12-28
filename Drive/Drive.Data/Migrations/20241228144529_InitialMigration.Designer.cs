@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Drive.Data.Migrations
 {
     [DbContext(typeof(DumpDriveDbContext))]
-    [Migration("20241223162843_InitialMigration")]
+    [Migration("20241228144529_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

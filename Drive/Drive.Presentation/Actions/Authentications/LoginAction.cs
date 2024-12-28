@@ -1,4 +1,5 @@
-﻿using Drive.Domain.Repositories;
+﻿using Drive.Data.Entities.Models;
+using Drive.Domain.Repositories;
 using Drive.Presentation.Abstractions;
 using Drive.Presentation.Extensions;
 using Drive.Presentation.Factories;
@@ -36,16 +37,19 @@ namespace Drive.Presentation.Actions.Authentications
 
                 if (user != null && user.Password == password)
                 {
-                    var userActions = MainMenuFactory.CreateActions(user);
-
-                    Console.Clear();
-                    userActions.PrintActions("========== Main Menu ==========\n");
+                    NavigateToMainMenu(user);
                     return; 
                 }
 
                 Writer.DisplayError("Invalid email or password. Please try again in 3 seconds.\n");
                 Thread.Sleep(3000);
             }
+        }
+        private void NavigateToMainMenu(User user)
+        {
+            var userActions = MainMenuFactory.CreateActions(user);
+            Console.Clear();
+            userActions.PrintActions("========== Main Menu ==========\n");
         }
     }
 }

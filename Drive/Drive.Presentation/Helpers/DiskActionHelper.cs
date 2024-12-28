@@ -31,14 +31,14 @@ namespace Drive.Presentation.Helpers
         public List<Folder> GetFoldersInCurrentLocation()
         {
             return _currentFolder.Folder == null
-            ? _userRepository.GetUserFolders(_user)
+            ? _userRepository.GetUserFolders(_user).Where(f => f.ParentFolderId == null).ToList()
             : _userRepository.GetUserFolders(_user).Where(f => f.ParentFolderId == _currentFolder.Folder.ItemId).ToList();
         }
 
         public List<Files> GetFilesInCurrentLocation()
         {
             return _currentFolder.Folder == null
-            ? _userRepository.GetUserFiles(_user)
+            ? _userRepository.GetUserFiles(_user).Where(f => f.ParentFolderId == null).ToList()
             : _userRepository.GetUserFiles(_user).Where(f => f.ParentFolderId == _currentFolder.Folder.ItemId).ToList();
         }
 

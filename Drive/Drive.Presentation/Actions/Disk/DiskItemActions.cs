@@ -127,7 +127,7 @@ namespace Drive.Presentation.Actions
                 }
                 else
                 {
-                    Writer.DisplayError($"{(itemType == "folder" ? "Folder" : "File")} {itemName} does not exist\n");
+                    Writer.DisplayError($"{(itemType == "folder" ? "Folder" : "File")} {itemName} does not exist in this location\n");
                 }
             
 
@@ -196,7 +196,7 @@ namespace Drive.Presentation.Actions
             _commandHelper.DisplayFolderContents();
         }
 
-        public void EditFileContents(string command, bool isShared)
+        public  void EditFileContents(string command, bool isShared)
         {
             var fileName = command.Substring("uredi datoteku".Length).Trim();
             var file = _commandHelper.GetFile(fileName, isShared);

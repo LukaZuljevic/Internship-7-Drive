@@ -5,7 +5,6 @@ using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
 using Drive.Domain.Factories;
 
-
 namespace Drive.Presentation.Actions.Authentications
 {
     public class RegisterAction : IAction
@@ -23,17 +22,42 @@ namespace Drive.Presentation.Actions.Authentications
         {
             Console.Clear();
             Writer.DisplayInfo("========== Registration ==========\n");
+            Writer.DisplayInfo("(put 'exit' as email to exit registration)\n");
 
+            var email = PromptEmail();
+            if (email == null) return;
+
+            var password = Reader.ConfirmPassword("Enter your password");
+            if (!Reader.ConfirmCaptcha()) return;
+
+            if (!RegisterUser(email, password)) return;
+
+            var user = _userRepository.GetByEmail(email);
+
+            Reader.TryReadInput("Enter disk name", out string diskName);
+            if (!CreateUserDisk(diskName, user)) return;
+
+            Writer.DisplaySuccess("\nRegistration successful!");
+            Reader.PressAnyKey();
+        }
+
+        private string? PromptEmail()
+        {
             string email;
             do
             {
                 email = Reader.TryReadEmail("Enter your email address");
-            }
-            while (Reader.IsEmailAlreadyInUse(email, _userRepository));
 
-            var password = Reader.ConfirmPassword("Enter your password");
-            var captchaConfirmation = Reader.ConfirmCaptcha();
+                if (email == "exit")
+                    return null;
 
+            } while (Reader.IsEmailAlreadyInUse(email, _userRepository));
+
+            return email;
+        }
+
+        private bool RegisterUser(string email, string password)
+        {
             var newUser = new User(email, password);
 
             var result = _userRepository.Add(newUser);
@@ -41,28 +65,28 @@ namespace Drive.Presentation.Actions.Authentications
             {
                 Writer.DisplayError("Registration failed. Please try again.\n");
                 Reader.PressAnyKey();
-                return;
+                return false;
             }
 
-            User user = _userRepository.GetByEmail(email);
+            return true;
+        }
 
-            Reader.TryReadInput("Enter disk name", out string diskName);
-
+        private bool CreateUserDisk(string diskName, User user)
+        {
             var disk = CreateAndAssignDisk(diskName, user);
-            if (disk is null)
+            if (disk == null)
             {
                 Writer.DisplayError("Registration failed due to a disk creation error.");
-                return;
+                return false;
             }
 
             user.DiskId = disk.DiskId;
             _userRepository.Update(user, user.UserId);
 
-            Writer.DisplaySuccess("\nRegistration successful!");
-            Reader.PressAnyKey();
+            return true;
         }
 
-        private Disk CreateAndAssignDisk(string name, User user)
+        private Disk? CreateAndAssignDisk(string name, User user)
         {
             var newDisk = new Disk(name, user.UserId);
             var diskCreationResult = _diskRepository.Add(newDisk);

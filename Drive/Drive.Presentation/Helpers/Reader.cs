@@ -33,7 +33,7 @@ namespace Drive.Presentation.Helpers
 
             var secondEmailPart = emailParts[1].Split(".");
 
-            if (secondEmailPart.Length < 2 || secondEmailPart[0].Length < 2 || secondEmailPart[1].Length < 2)
+            if (secondEmailPart.Length < 2 || secondEmailPart[0].Length < 2 || secondEmailPart[1].Length < 3)
                 return false;
 
             return true;
@@ -44,6 +44,9 @@ namespace Drive.Presentation.Helpers
             while (true)
             {
                 TryReadInput(message, out string input);
+
+                if (input == "exit")
+                    return input;
 
                 if (IsValidEmail(input))
                     return input;
@@ -132,7 +135,7 @@ namespace Drive.Presentation.Helpers
         {
             if (folders.Any(i => i.Name == name) || files.Any(i => i.Name == name))
             {
-                Writer.DisplayError($"Name {name} already exists\n");
+                Writer.DisplayError($"Name {name} already exists in this location\n");
                 return true;
             }
 

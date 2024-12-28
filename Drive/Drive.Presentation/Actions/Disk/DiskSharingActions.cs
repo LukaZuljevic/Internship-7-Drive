@@ -16,14 +16,17 @@ namespace Drive.Presentation.Actions
 
         private readonly FileRepository _filesRepository;
 
+        private readonly DiskActionHelper _commandHelper;
+
         private readonly User _user;
 
-        public DiskSharingActions(UserRepository userRepository, User user, FolderRepository folderRepository, FileRepository fileRepository)
+        public DiskSharingActions(UserRepository userRepository, User user, FolderRepository folderRepository, FileRepository fileRepository, DiskActionHelper commandHelper)
         {
             _userRepository = userRepository;
             _user = user;
             _folderRepository = folderRepository;
             _filesRepository = fileRepository;
+            _commandHelper = commandHelper;
         }
 
         public void ShareItem(string command)
@@ -51,10 +54,10 @@ namespace Drive.Presentation.Actions
 
         private Item? GetItemByName(string itemName)
         {
-            var itemFile = _filesRepository.GetByName(itemName, _user);
-            var itemFolder = _folderRepository.GetByName(itemName, _user);
+            var itemFile = _commandHelper.GetFilesInCurrentLocation().Find(f => f.Name == itemName);
+            var itemFolder = _commandHelper.GetFoldersInCurrentLocation().Find(f => f.Name == itemName);
 
-            if(itemFile is not null)
+            if (itemFile is not null)
             {
                 return itemFile;
             }

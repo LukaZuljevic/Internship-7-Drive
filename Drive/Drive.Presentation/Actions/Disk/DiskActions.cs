@@ -35,9 +35,12 @@ namespace Drive.Presentation.Actions
         public void Open()
         {
             var commandHelper = new DiskActionHelper(_user, _userRepository, _currentFolder);
-            var navigationActions = new DiskNavigationActions(_currentFolder, _folderHistory, commandHelper);
-            var sharingActions = new DiskSharingActions(_userRepository, _user, _folderRepository, _filesRepository);
+
+            var sharingActions = new DiskSharingActions(_userRepository, _user, _folderRepository, _filesRepository, commandHelper);
+
             var itemActions = new DiskItemActions(_currentFolder, _commentRepository, _folderRepository, _filesRepository, _userRepository, _user, commandHelper);
+
+            var navigationActions = new DiskNavigationActions(_currentFolder, _folderHistory, commandHelper, itemActions);
 
             commandHelper.DisplayFolderContents();
 
@@ -48,6 +51,7 @@ namespace Drive.Presentation.Actions
                 { command => Reader.StartsWithCommand(command, "stvori mapu"), itemActions.CreateFolderInCurrentLocation },
                 { command => Reader.StartsWithCommand(command, "stvori datoteku"), itemActions.CreateFileInCurrentLocation},
                 { command => Reader.StartsWithCommand(command, "udi u mapu"), navigationActions.NavigateToFolder },
+                { command => Reader.IsCommand(command, "navigacija"), _ => navigationActions.StartNavigationMode()},
                 { command => Reader.StartsWithCommand(command, "uredi datoteku"), command => itemActions.EditFileContents(command, false) },
                 { command => Reader.StartsWithCommand(command, "izbrisi"), itemActions.DeleteItem },
                 { command => Reader.StartsWithCommand(command, "promjeni naziv"), itemActions.ChangeItemName },

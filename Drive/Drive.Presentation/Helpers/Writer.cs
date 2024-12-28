@@ -59,7 +59,7 @@ namespace Drive.Presentation.Helpers
 
         public static void PrintCommands()
         {
-            Console.WriteLine("\nclear                                      - Clear terminal");
+            Console.WriteLine("\nclear                                       - Clear terminal");
             Console.WriteLine("help                                        - Display all commands");
             Console.WriteLine("stvori mapu 'ime mape'                      - Create a folder with the specified name");
             Console.WriteLine("stvori datoteku 'ime datoteke'              - Create a file with the specified name");
@@ -69,7 +69,8 @@ namespace Drive.Presentation.Helpers
             Console.WriteLine("promjeni naziv mape/datoteke 'ime' u 'novo' - Rename a folder or file");
             Console.WriteLine("podijeli mapu/datoteku s 'email'            - Share a folder or file");
             Console.WriteLine("prestani dijeliti 'mapu/datoteku' s 'email' - Stop shearing a folder or file");
-            Console.WriteLine("nazad                                       - Return to the previous folder\n");
+            Console.WriteLine("nazad                                       - Return to the previous folder");
+            Console.WriteLine("navigacijski mod                            - Navigation mode\n");
         }
 
         public static void PrintFileContents(List<string> lines)
@@ -155,6 +156,21 @@ namespace Drive.Presentation.Helpers
             }
 
             DisplayInfo("==============================\n");
+        }
+
+        public static void PrintItemsInNavigationMode(int selectedIndex, List<Item> items)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (i == selectedIndex)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+                Console.WriteLine(items[i].Name);
+                Console.ResetColor();
+            }
         }
     }
 }

@@ -23,8 +23,13 @@ namespace Drive.Presentation.Actions.Authentications
             {
                 Console.Clear();
                 Writer.DisplayInfo("========== Login ==========\n");
+                Writer.DisplayInfo("(put 'exit' as email to exit login)\n");
 
                 var email = Reader.TryReadEmail("Enter your email");
+
+                if (email == "exit")
+                    return;
+
                 var password = Reader.TryReadPassword("Enter your password");
 
                 var user = _userRepository.GetByEmail(email);

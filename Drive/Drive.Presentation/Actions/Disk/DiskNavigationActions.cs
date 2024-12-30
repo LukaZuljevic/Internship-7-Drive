@@ -31,7 +31,7 @@ namespace Drive.Presentation.Actions
             }
             else
             {
-                Writer.DisplayError($"Navigation to folder'{folderName}' was unsuccessful.\n");
+                Writer.DisplayError($"Navigation to folder '{folderName}' was unsuccessfull.\n");
             }
         }
 
@@ -72,14 +72,12 @@ namespace Drive.Presentation.Actions
             var files = _commandHelper.GetFilesInCurrentLocation();
 
             var items = folders.Cast<Item>().Concat(files).ToList();
-
             int selectedIndex = 0;
 
             while (true)
             {
                 Console.Clear();
-                Writer.DisplayInfo("Use arrows for navigation(press Escape button to leave navigation mode). \n");
-
+                Writer.DisplayInfo("Use arrows for navigation (press Backspace to go back, Escape to leave navigation mode).\n");
                 Writer.PrintItemsInNavigationMode(selectedIndex, items);
 
                 key = Console.ReadKey(true).Key;
@@ -89,41 +87,53 @@ namespace Drive.Presentation.Actions
                     case ConsoleKey.UpArrow:
                         selectedIndex = (selectedIndex - 1 + items.Count) % items.Count;
                         break;
+
                     case ConsoleKey.DownArrow:
                         selectedIndex = (selectedIndex + 1) % items.Count;
                         break;
+
                     case ConsoleKey.Enter:
                         EnterKeyAction(selectedIndex, items);
-                        break;
-                    case ConsoleKey.Backspace:
-                        ReturnToPreviousFolder();
-                        items = _commandHelper.GetFoldersInCurrentLocation().Cast<Item>().Concat(_commandHelper.GetFilesInCurrentLocation()).ToList();
+                        RefreshItems(items);
                         selectedIndex = 0; 
                         break;
+
+                    case ConsoleKey.Backspace:
+                        ReturnToPreviousFolder();
+                        RefreshItems(items);
+                        selectedIndex = 0;
+                        break;
+
                     case ConsoleKey.Escape:
                         _commandHelper.DisplayFolderContents();
                         return;
                 }
             }
         }
+
         private void EnterKeyAction(int selectedIndex, List<Item> items)
         {
             var selectedItem = items[selectedIndex];
+
             if (selectedItem is Folder folder)
             {
                 if (TryNavigateToFolder(folder.Name))
                 {
-                    items = _commandHelper.GetFoldersInCurrentLocation().Cast<Item>().Concat(_commandHelper.GetFilesInCurrentLocation()).ToList();
-
-                    Writer.PrintItemsInNavigationMode(selectedIndex, items);
+                    RefreshItems(items);    
+                    selectedIndex = 0;
                 }
-
-                selectedIndex = 0;
             }
             else if (selectedItem is Files file)
             {
                 _itemActions.EditFileContents($"uredi datoteku {file.Name}", false);
             }
+        }
+
+        private void RefreshItems(List<Item> items)
+        {
+            items.Clear();
+            items.AddRange(_commandHelper.GetFoldersInCurrentLocation().Cast<Item>()
+                .Concat(_commandHelper.GetFilesInCurrentLocation()));
         }
     }
 }

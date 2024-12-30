@@ -50,7 +50,7 @@ namespace Drive.Presentation.Actions
             if (!CheckIfValidName(folderName))
                 return;
 
-            if (!Reader.ConfirmAction($"Are you sure you want to create the folder '{folderName}'?"))
+            if (!Reader.ConfirmAction($"Are you sure you want to create folder '{folderName}'?"))
                 return;
 
             var newFolder = _commandHelper.CreateFolder(folderName);
@@ -67,7 +67,7 @@ namespace Drive.Presentation.Actions
             if(!CheckIfValidName(fileName))
                 return;
 
-            if (!Reader.ConfirmAction($"Are you sure you want to create the file '{fileName}'?"))
+            if (!Reader.ConfirmAction($"Are you sure you want to create file '{fileName}'?"))
                 return;
 
             var newFile = _commandHelper.CreateFile(fileName);
@@ -98,6 +98,9 @@ namespace Drive.Presentation.Actions
             var itemType = string.Empty;
 
             (itemType, itemName) = ParseDeleteCommand(command);
+
+            if (itemType == null && itemName == null)
+                return;
 
             if (!Reader.ConfirmAction($"Are you sure you want to delete '{itemName}'?"))
                 return;

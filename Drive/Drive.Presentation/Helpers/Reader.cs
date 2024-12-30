@@ -205,8 +205,22 @@ namespace Drive.Presentation.Helpers
                 Writer.DisplayInfo("Enter n or y");
                 TryReadInput($"\n{message} (y/n)", out input);
             }
+            Console.Write("\n");
 
             return input == "y";
+        }
+
+        public static bool PasswordCheck(string message, string userPassword)
+        {
+            var password = TryReadPassword(message);
+
+            if (password != userPassword)
+            {
+                Writer.DisplayError("\nPassword is incorrect. Please try again.");
+                PressAnyKey();
+                return false;
+            }
+            return true;
         }
     }
 }

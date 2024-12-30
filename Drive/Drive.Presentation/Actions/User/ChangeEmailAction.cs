@@ -20,6 +20,11 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
+            var hasAccessToChange = Reader.PasswordCheck("Enter your password to continue", _user.Password);
+
+            if (!hasAccessToChange)
+                return;
+
             string email;
             do
             {

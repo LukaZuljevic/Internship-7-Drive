@@ -9,6 +9,7 @@ namespace Drive.Presentation.Actions
     public class ChangePasswordAction : IAction
     {
         private readonly UserRepository _userRepository;
+
         private readonly User _user;
         public string ActionName { get; set; } = "Change Password";
         public ChangePasswordAction(UserRepository userRepository, User user)
@@ -19,6 +20,11 @@ namespace Drive.Presentation.Actions
 
         public void Open()
         {
+            var hasAccessToChange = Reader.PasswordCheck("Enter your password to continue", _user.Password);
+
+            if (!hasAccessToChange)
+                return;
+
             var password = Reader.ConfirmPassword("Enter your new password");
 
             _user.Password = password;

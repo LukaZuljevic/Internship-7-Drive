@@ -59,7 +59,7 @@ namespace Drive.Presentation.Actions
 
                 { command => Reader.StartsWithCommand(command, "udi u mapu"), navigationActions.NavigateToFolder },
 
-                { command => Reader.IsCommand(command, "navigacija"), _ => navigationActions.StartNavigationMode()},
+                { command => Reader.IsCommand(command, "navigacijski mod"), _ => navigationActions.StartNavigationMode()},
 
                 { command => Reader.StartsWithCommand(command, "uredi datoteku"), command => itemActions.EditFileContents(command, false) },
 

@@ -39,7 +39,7 @@ namespace Drive.Presentation.Actions
 
         public void AddComment()
         {
-            Reader.TryReadInput("Enter a new comment: ", out var content);
+            Reader.TryReadInput("Enter a new comment", out var content);
 
             var comment = new Comment(content, _user.UserId, _itemId);
 
@@ -66,7 +66,7 @@ namespace Drive.Presentation.Actions
                     return;
                 }
 
-                Reader.TryReadInput("Enter new content: ", out var newContent);
+                Reader.TryReadInput("Enter new content", out var newContent);
                 existingComment.Content = newContent;
 
                 var result = _commentRepository.Update(existingComment, commentId);

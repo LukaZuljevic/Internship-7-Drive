@@ -112,7 +112,7 @@ namespace Drive.Presentation.Helpers
 
         public static void PrintFileEditCommands()
         {
-            Console.WriteLine(":save                - Save and exit");
+            Console.WriteLine("\n:save                - Save and exit");
             Console.WriteLine(":cancel              - Exit without saving");
             Console.WriteLine(":otvori komentare    - Open comments");
             Console.WriteLine(":help                - Display available commands");
@@ -150,10 +150,10 @@ namespace Drive.Presentation.Helpers
 
         public static void PrintCommentCommands()
         {
-            Console.WriteLine("\nhelp                                         - Display all commands");
-            Console.WriteLine("dodaj komentar                               - Add a new comment");
-            Console.WriteLine("uredi komentar                               - Edit a comment");
-            Console.WriteLine("izbriši komentar                             - Delete a comment\n");
+            Console.WriteLine("\nhelp                           - Display all commands");
+            Console.WriteLine("dodaj komentar                 - Add a new comment");
+            Console.WriteLine("uredi komentar                 - Edit a comment");
+            Console.WriteLine("izbriši komentar               - Delete a comment\n");
         }
 
         public static void PrintComments(List<Comment> comments, UserRepository userRepository)

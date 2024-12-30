@@ -168,7 +168,9 @@ namespace Drive.Presentation.Helpers
         public static (string?, string?) ParseShareCommand(string command, int expectedParts, int firstPart, int secondPart)
         {
             var commandParts = command.Split(" ");
-            if (!CheckShareCommand(commandParts.Length, expectedParts)) return (null, null);
+
+            if (!CheckShareCommand(commandParts.Length, expectedParts)) 
+                return (null, null);
 
             return (commandParts[firstPart], commandParts[secondPart]);
         }
@@ -192,6 +194,19 @@ namespace Drive.Presentation.Helpers
                 return true;
             }
             return false;
+        }
+
+        public static bool ConfirmAction(string message)
+        {
+            TryReadInput($"\n{message} (y/n)", out var input);
+
+            while(input != "n" && input != "y")
+            {
+                Writer.DisplayInfo("Enter n or y");
+                TryReadInput($"\n{message} (y/n)", out input);
+            }
+
+            return input == "y";
         }
     }
 }

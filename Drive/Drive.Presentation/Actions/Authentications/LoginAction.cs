@@ -10,7 +10,6 @@ namespace Drive.Presentation.Actions.Authentications
     public class LoginAction : IAction
     {
         private readonly UserRepository _userRepository;
-
         public string ActionName { get; set; } = "Login";
 
         public LoginAction(UserRepository userRepository)
@@ -22,9 +21,7 @@ namespace Drive.Presentation.Actions.Authentications
         {
             while (true)
             {
-                Console.Clear();
-                Writer.DisplayInfo("========== Login ==========\n");
-                Writer.DisplayInfo("(put 'exit' as email to exit login)\n");
+                Writer.PrintLoginMenu();
 
                 var email = Reader.TryReadEmail("Enter your email");
 
@@ -45,7 +42,7 @@ namespace Drive.Presentation.Actions.Authentications
                 Thread.Sleep(3000);
             }
         }
-        private void NavigateToMainMenu(User user)
+        private static void NavigateToMainMenu(User user)
         {
             var userActions = MainMenuFactory.CreateActions(user);
             Console.Clear();

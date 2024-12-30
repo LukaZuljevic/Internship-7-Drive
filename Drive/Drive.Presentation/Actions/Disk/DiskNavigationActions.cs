@@ -6,8 +6,11 @@ namespace Drive.Presentation.Actions
     public class DiskNavigationActions
     {
         private readonly CurrentFolder? _currentFolder;
+
         private readonly Stack<Folder?> _folderHistory;
+
         private readonly DiskActionHelper _commandHelper;
+
         private readonly DiskItemActions _itemActions;
 
         public DiskNavigationActions(CurrentFolder? currentFolder, Stack<Folder?> folderHistory, DiskActionHelper diskActionHelper, DiskItemActions itemactions)
@@ -24,12 +27,11 @@ namespace Drive.Presentation.Actions
 
             if (TryNavigateToFolder(folderName))
             {
-                Writer.DisplaySuccess($"Uspješno navigirano u mapu '{folderName}'.\n");
                 _commandHelper.DisplayFolderContents();
             }
             else
             {
-                Writer.DisplayError($"Navigacija u mapu '{folderName}' nije uspjela.\n");
+                Writer.DisplayError($"Navigation to folder'{folderName}' was unsuccessful.\n");
             }
         }
 
@@ -76,7 +78,7 @@ namespace Drive.Presentation.Actions
             while (true)
             {
                 Console.Clear();
-                Writer.DisplayInfo("Koristite strelice za navigaciju. Pritisnite Enter za odabir ili Escape za izlazak iz navigacijskog moda.\n");
+                Writer.DisplayInfo("Use arrows for navigation(press Escape button to leave navigation mode). \n");
 
                 Writer.PrintItemsInNavigationMode(selectedIndex, items);
 
@@ -93,13 +95,17 @@ namespace Drive.Presentation.Actions
                     case ConsoleKey.Enter:
                         EnterKeyAction(selectedIndex, items);
                         break;
+                    case ConsoleKey.Backspace:
+                        ReturnToPreviousFolder();
+                        items = _commandHelper.GetFoldersInCurrentLocation().Cast<Item>().Concat(_commandHelper.GetFilesInCurrentLocation()).ToList();
+                        selectedIndex = 0; 
+                        break;
                     case ConsoleKey.Escape:
                         _commandHelper.DisplayFolderContents();
                         return;
                 }
             }
         }
-
         private void EnterKeyAction(int selectedIndex, List<Item> items)
         {
             var selectedItem = items[selectedIndex];

@@ -1,6 +1,4 @@
-﻿using Drive.Data.Entities.Models;
-
-namespace Drive.Presentation.Actions
+﻿namespace Drive.Data.Entities.Models
 {
     public class CurrentFolder
     {

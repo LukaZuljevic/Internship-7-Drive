@@ -31,17 +31,6 @@ namespace Drive.Domain.Repositories
             return SaveChanges();
         }
 
-        public ResponseResultType Delete(int fileId) {
-            var fileToDelete = DbContext.Files.Find(fileId);
-
-            if (fileToDelete == null)
-                return ResponseResultType.NotFound;
-
-            DbContext.Files.Remove(fileToDelete);
-
-            return SaveChanges();
-        }
-
         public Files? GetById(int fileId) => DbContext.Files.FirstOrDefault(f => f.ItemId == fileId);
         public Files? GetByName(string fileName, User user) => DbContext.Files.FirstOrDefault(f => f.Name == fileName && user.DiskId == f.DiskId);
     }

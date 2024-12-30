@@ -1,5 +1,4 @@
 ﻿using Drive.Data.Entities.Models;
-using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 using Drive.Domain.Enums;
@@ -10,22 +9,19 @@ namespace Drive.Presentation.Actions
     {
         private readonly UserRepository _userRepository;
 
-        private readonly SharedItemRepository _sharedItemRepository = RepositoryFactory.Create<SharedItemRepository>();
-
-        private readonly FolderRepository _folderRepository;
-
-        private readonly FileRepository _filesRepository;
+        private readonly SharedItemRepository _sharedItemRepository;
 
         private readonly DiskActionHelper _commandHelper;
 
-        private readonly User _user;//makni
+        private readonly ItemRepository _itemRepository;
 
-        public DiskSharingActions(UserRepository userRepository, User user, FolderRepository folderRepository, FileRepository fileRepository, DiskActionHelper commandHelper)
+        private readonly User _user;
+        public DiskSharingActions(User user, ItemRepository itemRepository, SharedItemRepository sharedItemRepository,UserRepository userRepository, DiskActionHelper commandHelper)
         {
-            _userRepository = userRepository;
             _user = user;
-            _folderRepository = folderRepository;
-            _filesRepository = fileRepository;
+            _itemRepository = itemRepository;
+            _sharedItemRepository = sharedItemRepository;
+            _userRepository = userRepository;
             _commandHelper = commandHelper;
         }
 
@@ -35,26 +31,27 @@ namespace Drive.Presentation.Actions
             var userPart = 3;
 
             var (itemName, userEmail) = Reader.ParseShareCommand(command, 4, itemPart, userPart);
-            if (itemName == null || userEmail == null) return;
+            if (itemName == null || userEmail == null)
+                return;
 
             var userToReceiveItem = _userRepository.GetByEmail(userEmail);
-            if (userToReceiveItem is null)
+            if (userToReceiveItem is null || userToReceiveItem.Email == _user.Email)
             {
                 Writer.DisplayError($"User {userEmail} does not exist\n");
                 return;
             }
 
             var selectedItem = GetItemByName(itemName);
-            if (selectedItem == null) return;
+            if (selectedItem == null) 
+                return;
 
-            if (Reader.IsAlreadyShared(itemName, userToReceiveItem.UserId, _sharedItemRepository)) return;
+            if (Reader.IsAlreadyShared(itemName, userToReceiveItem.UserId, _sharedItemRepository))
+                return;
 
             ShareSelectedItem(selectedItem, userToReceiveItem, itemName, userEmail);
 
             if (selectedItem is Folder folder)
-            {
                 ShareFolderContents(folder, userToReceiveItem);
-            }
         }
 
         private Item? GetItemByName(string itemName)
@@ -126,20 +123,25 @@ namespace Drive.Presentation.Actions
             var sharedItem = GetSharedItem(itemName, user.UserId);
             if (sharedItem == null) return;
 
+            var fullSharedItem = _itemRepository.GetByItemIdWithItems(sharedItem.ItemId);
+
+            if (fullSharedItem is Folder folder)
+                StopSharingFolderContents(folder, user.UserId);
+            
             StopSharing(sharedItem, itemName, userEmail);
         }
 
-        private SharedItem? GetSharedItem(string itemName, int userId)
+        public SharedItem? GetSharedItem(string itemName, int userId)
         {
             var sharedItem = _sharedItemRepository.GetByNameAndUserId(itemName, userId);
+
             if (sharedItem == null)
-            {
                 Writer.DisplayError($"Item {itemName} is not shared or does not exist\n");
-            }
+
             return sharedItem;
         }
 
-        private void StopSharing(SharedItem sharedItem, string itemName, string userEmail)
+        public void StopSharing(SharedItem sharedItem, string itemName, string userEmail)
         {
             var result = _sharedItemRepository.Delete(sharedItem.SharedItemId);
             if (result == ResponseResultType.Success)
@@ -152,5 +154,25 @@ namespace Drive.Presentation.Actions
             }
         }
 
+        public void StopSharingFolderContents(Folder folder, int userId)
+        {
+            foreach (var subFolder in folder.Items.OfType<Folder>())
+            {
+                var sharedSubFolder = _sharedItemRepository.GetByNameAndUserId(subFolder.Name, userId);
+                if (sharedSubFolder != null)
+                {
+                    _sharedItemRepository.Delete(sharedSubFolder.SharedItemId);
+                    StopSharingFolderContents(subFolder, userId);
+                }
+            }
+
+            foreach (var file in folder.Items.OfType<Files>())
+            {
+                var sharedFile = _sharedItemRepository.GetByNameAndUserId(file.Name, userId);
+
+                if (sharedFile != null)
+                    _sharedItemRepository.Delete(sharedFile.SharedItemId);
+            }
+        }
     }
 }

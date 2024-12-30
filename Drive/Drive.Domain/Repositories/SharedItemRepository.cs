@@ -29,7 +29,6 @@ namespace Drive.Domain.Repositories
         }
 
         public SharedItem? GetByNameAndUserId(string sharedItemName, int userId) => DbContext.SharedItems.FirstOrDefault(f => f.ItemName == sharedItemName && f.UserId == userId);
-
         public List<SharedItem> GetByUserId(int userId) => DbContext.SharedItems.Where(i => i.UserId == userId).ToList();
     }
 }

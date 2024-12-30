@@ -1,7 +1,6 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Factories;
 using Drive.Domain.Repositories;
-using Drive.Presentation.Actions;
 
 namespace Drive.Presentation.Helpers
 {
@@ -9,10 +8,15 @@ namespace Drive.Presentation.Helpers
     {
 
         private readonly User _user;
+
         private readonly UserRepository _userRepository;
+
         private readonly CurrentFolder? _currentFolder;
-        private readonly SharedItemRepository _sharedItemRepository = RepositoryFactory.Create<SharedItemRepository>();
-        private readonly ItemRepository _itemRepository = RepositoryFactory.Create<ItemRepository>();
+
+        private readonly SharedItemRepository _sharedItemRepository;
+
+        private readonly ItemRepository _itemRepository;
+
         private readonly FileRepository _filesRepository = RepositoryFactory.Create<FileRepository>();
 
         public DiskActionHelper(User user, UserRepository userRepository, CurrentFolder? currentFolder)

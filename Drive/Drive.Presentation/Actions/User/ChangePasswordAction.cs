@@ -26,7 +26,7 @@ namespace Drive.Presentation.Actions
 
             Writer.DisplayInfo(result == ResponseResultType.Success
                   ? "\nPassword updated successfully!"
-                  : "\nFailed to update Password. Please try again.");
+                  : "\nFailed to update Password. Please try again.;");
 
             Reader.PressAnyKey();
         }

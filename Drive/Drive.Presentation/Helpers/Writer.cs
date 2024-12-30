@@ -1,6 +1,5 @@
 ﻿using Drive.Data.Entities.Models;
 using Drive.Domain.Repositories;
-using Drive.Presentation.Actions;
 
 namespace Drive.Presentation.Helpers
 {
@@ -25,6 +24,20 @@ namespace Drive.Presentation.Helpers
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(message);
             Console.ResetColor();
+        }
+
+        public static void PrintLoginMenu()
+        {
+            Console.Clear();
+            DisplayInfo("========== Login ==========\n");
+            DisplayInfo("(put 'exit' as email to exit login)\n");
+        }
+
+        public static void PrintRegistrationMenu()
+        {
+            Console.Clear();
+            DisplayInfo("========== Registration ==========\n");
+            DisplayInfo("(put 'exit' as email to exit registration)\n");
         }
 
         public static void PrintFolders(List<Folder> folders)
@@ -125,7 +138,7 @@ namespace Drive.Presentation.Helpers
             Console.WriteLine("");
             PrintFiles(files);
 
-            DisplayInfo("\n=============================");
+            DisplayInfo("\n====================================");
         }
 
         public static void PrintReducedCommands()

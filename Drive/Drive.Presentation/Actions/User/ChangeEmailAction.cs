@@ -9,6 +9,7 @@ namespace Drive.Presentation.Actions
     public class ChangeEmailAction : IAction
     {
         private readonly UserRepository _userRepository;
+
         private readonly User _user;
         public string ActionName { get; set; } = "Change Email";
         public ChangeEmailAction(UserRepository userRepository, User user)

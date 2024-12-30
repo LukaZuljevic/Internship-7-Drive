@@ -2,7 +2,6 @@
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 using Drive.Domain.Enums;
-using Drive.Domain.Factories;
 
 namespace Drive.Presentation.Actions
 {
@@ -20,12 +19,13 @@ namespace Drive.Presentation.Actions
 
         private readonly FileRepository _filesRepository;
 
-        private readonly ItemRepository _itemRepository = RepositoryFactory.Create<ItemRepository>();
+        private readonly ItemRepository _itemRepository;
 
         private readonly User _user;
 
-        public DiskItemActions(CurrentFolder? currentFolder, CommentRepository commentRepository, FolderRepository folderRepository, FileRepository filesRepository, UserRepository userRepository, User user, DiskActionHelper commandHelper)
+        public DiskItemActions(ItemRepository itemRepository, CurrentFolder? currentFolder, CommentRepository commentRepository, FolderRepository folderRepository, FileRepository filesRepository, UserRepository userRepository, User user, DiskActionHelper commandHelper)
         {
+            _itemRepository = itemRepository;
             _commentRepository = commentRepository;
             _folderRepository = folderRepository;
             _filesRepository = filesRepository;
@@ -47,24 +47,15 @@ namespace Drive.Presentation.Actions
         {
             var folderName = command.Substring("stvori mapu".Length).Trim();
 
-            if (_commandHelper.IsNameDuplicate(folderName))
+            if (!CheckIfValidName(folderName))
                 return;
 
-            if (folderName.Length == 0)
-            {
-                Writer.DisplayError("Folder name cannot be empty\n");
+            if (!Reader.ConfirmAction($"Are you sure you want to create the folder '{folderName}'?"))
                 return;
-            }
 
             var newFolder = _commandHelper.CreateFolder(folderName);
 
-            var result = _folderRepository.Add(newFolder);
-
-            if (result != ResponseResultType.Success)
-            {
-                Writer.DisplayError($"Failed to create folder '{folderName}'. Please try again.\n");
-
-            }
+            _folderRepository.Add(newFolder);
 
             _commandHelper.DisplayFolderContents();
         }
@@ -73,64 +64,80 @@ namespace Drive.Presentation.Actions
         {
             var fileName = command.Substring("stvori datoteku".Length).Trim();
 
-            if (_commandHelper.IsNameDuplicate(fileName))
+            if(!CheckIfValidName(fileName))
                 return;
 
-            if (fileName.Length == 0)
-            {
-                Writer.DisplayError("File name cannot be empty\n");
+            if (!Reader.ConfirmAction($"Are you sure you want to create the file '{fileName}'?"))
                 return;
-            }
 
             var newFile = _commandHelper.CreateFile(fileName);
 
-            var result = _filesRepository.Add(newFile);
-
-            if (result != ResponseResultType.Success)
-            {
-                Writer.DisplayError($"Failed to create folder '{fileName}'. Please try again.\n");
-
-            }
+            _filesRepository.Add(newFile);
 
             _commandHelper.DisplayFolderContents();
         }
 
+        private bool CheckIfValidName(string name)
+        {
+            if (_commandHelper.IsNameDuplicate(name))
+                return false;
+
+            if (name.Length == 0)
+            {
+                Writer.DisplayError("Name cannot be empty\n");
+                return false;
+            }
+
+            return true;
+        }
+
         public void DeleteItem(string command)
         {
-            
-                var itemName = string.Empty;
-                var itemType = string.Empty;
 
-                if (Reader.StartsWithCommand(command, "izbrisi mapu"))
-                {
-                    itemType = "folder";
-                    itemName = command.Substring("izbrisi mapu".Length).Trim();
-                }
-                else if (Reader.StartsWithCommand(command, "izbrisi datoteku"))
-                {
-                    itemType = "file";
-                    itemName = command.Substring("izbrisi datoteku".Length).Trim();
-                }
-                else
-                {
-                     Writer.DisplayError("Invalid command. Try again.\n");
-                     return;
-                }
+            var itemName = string.Empty;
+            var itemType = string.Empty;
 
-                var currentFolderId = _currentFolder?.Folder?.ItemId ?? null; 
-                var item = _itemRepository.GetByName(itemName, currentFolderId, itemType);
+            (itemType, itemName) = ParseDeleteCommand(command);
 
-            if (item != null)
-                {
-                    _itemRepository.Delete(item.ItemId);
-                    _commandHelper.DisplayFolderContents();
-                }
-                else
-                {
-                    Writer.DisplayError($"{(itemType == "folder" ? "Folder" : "File")} {itemName} does not exist in this location\n");
-                }
-            
+            if (!Reader.ConfirmAction($"Are you sure you want to delete '{itemName}'?"))
+                return;
 
+            var currentFolderId = _currentFolder?.Folder?.ItemId ?? null;
+            var item = _itemRepository.GetByName(itemName, currentFolderId, itemType);
+
+            if (item is not null)
+            {
+                _itemRepository.Delete(item.ItemId);
+                _commandHelper.DisplayFolderContents();
+            }
+            else
+            {
+                Writer.DisplayError($"{(itemType == "folder" ? "Folder" : "File")} {itemName} does not exist in this location\n");
+            }
+        }
+
+        private static (string? itemType, string? itemName) ParseDeleteCommand(string command)
+        {
+            string? itemType = null;
+            string? itemName = null;
+
+            if (Reader.StartsWithCommand(command, "izbrisi mapu"))
+            {
+                itemType = "folder";
+                itemName = command.Substring("izbrisi mapu".Length).Trim();
+            }
+            else if (Reader.StartsWithCommand(command, "izbrisi datoteku"))
+            {
+                itemType = "file";
+                itemName = command.Substring("izbrisi datoteku".Length).Trim();
+            }
+            else
+            {
+                Writer.DisplayError("Invalid command. Try again.\n");
+                return (null, null);
+            }
+
+            return (itemType, itemName);
         }
 
         public void ChangeItemName(string command)
@@ -139,9 +146,13 @@ namespace Drive.Presentation.Actions
             var newNamePart = 5;
 
             var (oldName, newName) = Reader.ParseShareCommand(command, 6, oldNamePart, newNamePart);
-            if (oldName == null || newName == null) return;
+            if (oldName == null || newName == null) 
+                return;
 
-            if (_commandHelper.IsNameDuplicate(newName) )
+            if (_commandHelper.IsNameDuplicate(newName))
+                return;
+
+            if (!Reader.ConfirmAction($"Are you sure you want to rename '{oldName}'?"))
                 return;
 
             if (Reader.StartsWithCommand(command, "promjeni naziv mape"))
@@ -157,7 +168,7 @@ namespace Drive.Presentation.Actions
         private void RenameFolder(string oldName, string newName)
         {
             var folder = _folderRepository.GetByName(oldName, _user);
-            if (folder == null)
+            if (folder is null)
             {
                 Writer.DisplayError($"Folder {oldName} does not exist\n");
                 return;
@@ -178,7 +189,7 @@ namespace Drive.Presentation.Actions
         private void RenameFile(string oldName, string newName)
         {
             var file = _filesRepository.GetByName(oldName, _user);
-            if (file == null)
+            if (file is null)
             {
                 Writer.DisplayError($"File {oldName} does not exist\n");
                 return;
@@ -196,7 +207,7 @@ namespace Drive.Presentation.Actions
             _commandHelper.DisplayFolderContents();
         }
 
-        public  void EditFileContents(string command, bool isShared)
+        public void EditFileContents(string command, bool isShared)
         {
             var fileName = command.Substring("uredi datoteku".Length).Trim();
             var file = _commandHelper.GetFile(fileName, isShared);

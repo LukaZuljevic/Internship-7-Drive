@@ -1,5 +1,4 @@
 ﻿using Drive.Data.Entities.Models;
-using Drive.Domain.Enums;
 using Drive.Domain.Repositories;
 using Drive.Presentation.Helpers;
 
@@ -30,8 +29,11 @@ namespace Drive.Presentation.Actions
             var commandDictionary = new Dictionary<Func<string, bool>, Action<string>>
             {
                 { command => Reader.IsCommand(command, "help"), _=> Writer.PrintCommentCommands() },
+
                 { command => Reader.IsCommand(command, "dodaj komentar"), _ => commentCommandActions.AddComment() },
+
                 { command => Reader.IsCommand(command, "uredi komentar"), _=> commentCommandActions.EditComment() },
+
                 { command => Reader.IsCommand(command, "izbrisi komentar"), _=> commentCommandActions.DeleteComment() }
             };
 

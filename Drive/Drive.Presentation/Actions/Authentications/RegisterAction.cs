@@ -10,6 +10,7 @@ namespace Drive.Presentation.Actions.Authentications
     public class RegisterAction : IAction
     {
         private readonly UserRepository _userRepository;
+
         private readonly static DiskRepository _diskRepository = RepositoryFactory.Create<DiskRepository>();
         public string ActionName { get; set; } = "Register";
 
@@ -20,9 +21,7 @@ namespace Drive.Presentation.Actions.Authentications
 
         public void Open()
         {
-            Console.Clear();
-            Writer.DisplayInfo("========== Registration ==========\n");
-            Writer.DisplayInfo("(put 'exit' as email to exit registration)\n");
+            Writer.PrintRegistrationMenu();
 
             var email = PromptEmail();
             if (email == null) return;
@@ -86,7 +85,7 @@ namespace Drive.Presentation.Actions.Authentications
             return true;
         }
 
-        private Disk? CreateAndAssignDisk(string name, User user)
+        private static Disk? CreateAndAssignDisk(string name, User user)
         {
             var newDisk = new Disk(name, user.UserId);
             var diskCreationResult = _diskRepository.Add(newDisk);

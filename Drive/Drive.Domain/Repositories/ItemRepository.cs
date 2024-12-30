@@ -1,7 +1,7 @@
 ﻿using Drive.Data.Entities;
 using Drive.Data.Entities.Models;
 using Drive.Domain.Enums;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace Drive.Domain.Repositories
 {
@@ -33,6 +33,14 @@ namespace Drive.Domain.Repositories
                 return DbContext.Files.FirstOrDefault(f => f.Name == name && f.ParentFolderId == parentFolderId);
 
             return null;
+        }
+
+        public Folder? GetByItemIdWithItems(int folderId)
+        {
+            return DbContext.Folders
+                .Include(f => f.Items)
+                .ThenInclude(i => (i as Folder).Items) // Recursively include subfolders
+                .FirstOrDefault(f => f.ItemId == folderId);
         }
 
     }

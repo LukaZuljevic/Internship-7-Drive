@@ -16,21 +16,32 @@ Make sure you have the following installed before getting started:
 ## 🚀 Getting Started
 
 git clone https://github.com/LukaZuljevic/Internship-7-Drive.git
+
 cd Internship-7-Drive
 
+
 Open pgAdmin (or any PostgreSQL tool you prefer).
+
 Create a new database named DriveApp.
 
+
 In the presentation project folder, locate and open the App.config file.
+
 Update the connection string with your PostgreSQL username, password and port.
+
 
 <add name="Drive" connectionString="Server=127.0.0.1;Port=5432;Database=DriveApp;User Id="youruser";Password="yourpassword";" />
 
+
 Replace youruser with your PostgreSQL username.
+
 Replace yourpassword with your PostgreSQL password.
 
+
 Run this command to create tables in your DriveApp database:
+
 dotnet ef database update --startup-project Presentation --project Data
+
 
 Run the app:
 dotnet run --project Presentation

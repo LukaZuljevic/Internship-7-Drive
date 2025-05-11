@@ -20,8 +20,10 @@ Make sure you have the following installed before getting started:
 
    ```
    git clone https://github.com/LukaZuljevic/Internship-7-Drive.git
-   cd Internship-7-Drive
    ```
+  ```
+  cd Internship-7-Drive/Drive
+  ```
 
 2. Database Setup
    - Open pgAdmin (or any PostgreSQL tool you prefer)
@@ -38,11 +40,11 @@ Make sure you have the following installed before getting started:
 4. Initialize Database
 
    ```
-   dotnet ef database update --startup-project Presentation --project Data
+   dotnet ef database update --startup-project Drive.Presentation --project Drive.Data
    ```
 
 5. Run the Application
 
    ```
-   dotnet run --project Presentation
+   dotnet run --project Drive.Presentation
    ```

@@ -6,42 +6,43 @@
 
 ## ✅ Prerequisites
 Make sure you have the following installed before getting started:
-
 - [PostgreSQL](https://www.postgresql.org/download/) (version 13 or newer)
 - [pgAdmin](https://www.pgadmin.org/download/) (optional but recommended)
 - [.NET SDK 6.0](https://dotnet.microsoft.com/en-us/download) or newer
 - Run this command in your terminal to install EF Core CLI Tools:
+  ```
   dotnet tool install --global dotnet-ef
+  ```
 
-## 🚀 Getting Started
+## 🔗 Installation
 
-git clone https://github.com/LukaZuljevic/Internship-7-Drive.git
+1. Clone the repository
 
-cd Internship-7-Drive
+   ```
+   git clone https://github.com/LukaZuljevic/Internship-7-Drive.git
+   cd Internship-7-Drive
+   ```
 
+2. Database Setup
+   - Open pgAdmin (or any PostgreSQL tool you prefer)
+   - Create a new database named `DriveApp`
 
-Open pgAdmin (or any PostgreSQL tool you prefer).
+3. Configure Connection String
+   - In the presentation project folder, locate and open the `App.config` file
+   - Update the connection string with your PostgreSQL credentials:
 
-Create a new database named DriveApp.
+   ```
+   <add name="Drive" connectionString="Server=127.0.0.1;Port=5432;Database=DriveApp;User Id=youruser;Password=yourpassword;" />
+   ```
 
+4. Initialize Database
 
-In the presentation project folder, locate and open the App.config file.
+   ```
+   dotnet ef database update --startup-project Presentation --project Data
+   ```
 
-Update the connection string with your PostgreSQL username, password and port.
+5. Run the Application
 
-
-<add name="Drive" connectionString="Server=127.0.0.1;Port=5432;Database=DriveApp;User Id="youruser";Password="yourpassword";" />
-
-
-Replace youruser with your PostgreSQL username.
-
-Replace yourpassword with your PostgreSQL password.
-
-
-Run this command to create tables in your DriveApp database:
-
-dotnet ef database update --startup-project Presentation --project Data
-
-
-Run the app:
-dotnet run --project Presentation
+   ```
+   dotnet run --project Presentation
+   ```
